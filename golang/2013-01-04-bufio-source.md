@@ -325,7 +325,26 @@ func (b *Writer) Write(p []byte) (nn int, err error) {
 }
 ```
 
+### WriteByte
+写入单个字节数据.
+```go
+func (b *Writer) WriteByte(c byte) error {
+	if b.err != nil {
+		return b.err
+	}
+	// 缓冲区中没有可用空间时, 尝试执行Flush操作, 如果Flush失败, 直接返回错误
+	if b.Available() <= 0 && b.Flush() != nil {
+		return b.err
+	}
+	// 将c写入缓冲区
+	b.buf[b.n] = c
+	b.n++
+	return nil
+}
+```
 
+### WriteString
+写入string数据. 从源码可以看出, 相当于调用了`Write([]byte(s))`.
 
 
 
