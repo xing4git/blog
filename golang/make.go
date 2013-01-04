@@ -72,7 +72,7 @@ func main() {
 		nbytes = append(tempbuf, nbytes...)
 
 		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----\n")...)
-		nbytes = append(nbytes, []byte("+ [目录](../)\n")...)
+		nbytes = append(nbytes, []byte("+ [目录](../golang)\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
 			nbytes = append(nbytes, []byte("+ 上一节: [" + decorateFilename(previous) + "](" + previous + ")\n")...)

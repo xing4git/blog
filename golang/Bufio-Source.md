@@ -358,5 +358,5 @@ func (b *Writer) WriteByte(c byte) error {
 
 links
 -----
-+ [目录](../)
++ [目录](../golang)
 + 下一节: [Ioutil Source](Ioutil-Source.md)
