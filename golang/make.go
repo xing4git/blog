@@ -46,14 +46,9 @@ func main() {
 	readme.WriteString("-----\n\n")
 	change.WriteString("update README.md;")
 
-	var curdate string
 	for _, value := range filenames {
-		tempdate := value[1:11]
-		if tempdate != curdate {
-			curdate = tempdate
-			readme.WriteString("\n#### " + curdate + " >>  \n")
-		}
 		realname := value[12:]
+		readme.WriteString("####" + decorateFilename(realname) + "\n")
 
 		file, err := os.Open(value)
 		checkErr(err)
@@ -67,13 +62,13 @@ func main() {
 		line, err = buf.ReadString('\n')
 		checkErr(err)
 		readme.WriteString(string(line[0:len(line)-1]))
-		readme.WriteString("...[Read More](golang/" + realname + ")\n")
+		readme.WriteString("...[Read More](golang/" + realname + ")\n\n")
 
 		file.Seek(0, os.SEEK_SET)
 		nbytes, err := ioutil.ReadAll(file)
 		checkErr(err)
 		var tempbuf []byte
-		tempbuf = append(tempbuf, []byte(realname + "\n" + "----\n\n")...)
+		tempbuf = append(tempbuf, []byte(decorateFilename(realname) + "\n" + "----\n\n")...)
 		nbytes = append(tempbuf, nbytes...)
 
 		pbytes, err := ioutil.ReadFile(realname)
@@ -97,6 +92,29 @@ func main() {
 	ret, err := cmdutils.BashExecute(commit.String())
 	checkErr(err)
 	fmt.Println(ret)
+}
+
+func decorateFilename(str string) string {
+	bytes := []byte(str)
+	var suffixStart int = -1
+	for i := len(str)-1; i >= 0; i-- {
+		if bytes[i] == '.' {
+			suffixStart = i
+			break
+		}
+	}
+
+	if suffixStart == -1 {
+		bytes = bytes[:suffixStart]
+	}
+
+	for pos, v := range bytes {
+		if v == '-' {
+			bytes[pos] = ' '
+		}
+	}
+
+	return string(bytes)
 }
 
 func compareBytes(pbytes []byte, nbytes []byte) int {
