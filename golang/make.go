@@ -55,7 +55,8 @@ func main() {
 		defer file.Close()
 
 		readme.WriteString("> ")
-		readme.WriteString("created at " + value[1:11] + "\n\n")
+		readme.WriteString("created at " + value[1:11] + "\n")
+		readme.WriteString("> ")
 		buf := bufio.NewReader(file)
 		line, err := buf.ReadString('\n')
 		checkErr(err)
