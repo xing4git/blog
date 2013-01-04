@@ -1,4 +1,4 @@
-bufio source.md
+bufio source
 ----
 
 bufio包提供了带有缓冲功能的Reader和Writer, 应用了`装饰者模式`.  

@@ -54,13 +54,14 @@ func main() {
 		checkErr(err)
 		defer file.Close()
 
-		readme.WriteString(" - ")
 		buf := bufio.NewReader(file)
 		line, err := buf.ReadString('\n')
 		checkErr(err)
+		readme.WriteString("> ")
 		readme.WriteString(string(line[0:len(line)-1]))
 		line, err = buf.ReadString('\n')
 		checkErr(err)
+		readme.WriteString("> ")
 		readme.WriteString(string(line[0:len(line)-1]))
 		readme.WriteString("...[Read More](golang/" + realname + ")\n\n")
 
@@ -104,7 +105,7 @@ func decorateFilename(str string) string {
 		}
 	}
 
-	if suffixStart == -1 {
+	if suffixStart != -1 {
 		bytes = bytes[:suffixStart]
 	}
 
