@@ -226,6 +226,105 @@ func (b *Reader) ReadString(delim byte) (line string, err error) {
 可以调用ReadString('\n')代替ReadLine, 此时不需要处理烦人的isPrefix标记, 因为对于ReadString('\n')来说, 不管行有多长, 都只会一次性返回.
 
 
+Writer
+----
+bufio.Writer的定义如下:
+```go
+type Writer struct {
+	err error
+	// 缓冲区
+	buf []byte
+	// buf中有效数据个数
+	n   int
+	// 底层Writer
+	wr  io.Writer
+}
+```
+
+### 创建*Writer对象
+可以通过以下2个function创建*bufio.Writer对象:
+```go
+// 指定缓冲区大小
+func NewWriterSize(wr io.Writer, size int) *Writer
+// 使用默认缓冲区大小, 相当于调用NewWriterSize(wr, defaultBufSize)
+func NewWriter(wr io.Writer) *Writer
+```
+
+### Flush
+将缓冲区中的数据写入相应的底层io.Writer:
+```go
+func (b *Writer) Flush() error {
+	if b.err != nil {
+		return b.err
+	}
+	// 缓冲区中没有数据
+	if b.n == 0 {
+		return nil
+	}
+	// 将缓冲区中的数据写入io.Writer
+	n, e := b.wr.Write(b.buf[0:b.n])
+	if n < b.n && e == nil {
+		e = io.ErrShortWrite
+	}
+	if e != nil {
+		// 写入了n个字节时, 将写入的部分从缓冲区中删除
+		if n > 0 && n < b.n {
+			copy(b.buf[0:b.n-n], b.buf[n:b.n])
+		}
+		// 设置相关标记
+		b.n -= n
+		b.err = e
+		return e
+	}
+	// 清空缓冲区
+	b.n = 0
+	return nil
+}
+```
+
+### Available
+返回缓冲区中的空闲字节数:
+```go
+func (b *Writer) Available() int { return len(b.buf) - b.n }
+```
+
+### Buffered
+返回缓冲区中的有效字节数:
+```go
+func (b *Writer) Buffered() int { return b.n }
+```
+
+### Write
+*bufio.Writer具有Write方法, 因此*bufio.Writer实现了io.Writer接口.
+```go
+func (b *Writer) Write(p []byte) (nn int, err error) {
+	for len(p) > b.Available() && b.err == nil {
+		var n int
+		if b.Buffered() == 0 {
+			// 需要写入大量数据, 且缓冲区中没有有效数据时, 直接将p写入底层io.Writer中
+			n, b.err = b.wr.Write(p)
+		} else {
+			// 先将部分数据(b.Available()个字节)写入缓冲区中, 然后再刷新缓存
+			n = copy(b.buf[b.n:], p)
+			b.n += n
+			// Flush时如果出错, 会将error存储在b.err中
+			b.Flush()
+		}
+		nn += n
+		// 截去已写入的部分
+		p = p[n:]
+	}
+	if b.err != nil {
+		return nn, b.err
+	}
+	// 将剩余部分写入缓冲区, 此时len(p) <= b.Available(), 即缓冲区肯定能够容纳p中的数据
+	n := copy(b.buf[b.n:], p)
+	b.n += n
+	nn += n
+	return nn, nil
+}
+```
+
 
 
 
