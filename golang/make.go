@@ -93,6 +93,7 @@ func main() {
 	commit.WriteString("git add .\n")
 	commit.WriteString("git commit -a -m '" + change.String() + "'\n")
 	commit.WriteString("git push -u origin master\n")
+	fmt.Println(commit.String())
 	ret, err := cmdutils.BashExecute(commit.String())
 	checkErr(err)
 	fmt.Println(ret)
