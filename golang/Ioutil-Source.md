@@ -358,4 +358,5 @@ func (b *Writer) WriteByte(c byte) error {
 
 links
 -----
-+ previous: [Bufio Source](Bufio-Source.md)
++ [目录](../)
++ 上一节: [Bufio Source](Bufio-Source.md)

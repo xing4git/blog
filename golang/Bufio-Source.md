@@ -358,4 +358,5 @@ func (b *Writer) WriteByte(c byte) error {
 
 links
 -----
-+ next: [Ioutil Source](Ioutil-Source.md)
++ [目录](../)
++ 下一节: [Ioutil Source](Ioutil-Source.md)

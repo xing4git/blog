@@ -72,13 +72,14 @@ func main() {
 		nbytes = append(tempbuf, nbytes...)
 
 		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----\n")...)
+		nbytes = append(nbytes, []byte("+ [目录](../)\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
-			nbytes = append(nbytes, []byte("+ previous: [" + decorateFilename(previous) + "](" + previous + ")\n")...)
+			nbytes = append(nbytes, []byte("+ 上一节: [" + decorateFilename(previous) + "](" + previous + ")\n")...)
 		}
 		if key != len(filenames)-1 {
 			next := filenames[key+1][12:]
-			nbytes = append(nbytes, []byte("+ next: [" + decorateFilename(next) + "](" + next + ")\n")...)
+			nbytes = append(nbytes, []byte("+ 下一节: [" + decorateFilename(next) + "](" + next + ")\n")...)
 		}
 
 		pbytes, err := ioutil.ReadFile(realname)
