@@ -40,7 +40,7 @@ func main() {
 	}
 
 	sort.Strings(filenames)
-	fmt.Println(filenames)
+	fmt.Println("filenames: ", filenames, "\n")
 
 	readme.WriteString("Index\n")
 	readme.WriteString("-----\n\n")
