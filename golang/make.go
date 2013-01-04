@@ -71,7 +71,7 @@ func main() {
 		tempbuf = append(tempbuf, []byte(decorateFilename(realname) + "\n" + "----\n\n")...)
 		nbytes = append(tempbuf, nbytes...)
 
-		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----")...)
+		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
 			nbytes = append(nbytes, []byte("+ previous: [" + decorateFilename(previous) + "](" + previous + ")\n")...)

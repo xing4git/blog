@@ -357,4 +357,5 @@ func (b *Writer) WriteByte(c byte) error {
 
 
 links
------+ previous: [Bufio Source](Bufio-Source.md)
+-----
++ previous: [Bufio Source](Bufio-Source.md)

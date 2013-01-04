@@ -357,4 +357,5 @@ func (b *Writer) WriteByte(c byte) error {
 
 
 links
------+ next: [Ioutil Source](Ioutil-Source.md)
+-----
++ next: [Ioutil Source](Ioutil-Source.md)
