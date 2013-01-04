@@ -70,14 +70,15 @@ func main() {
 		var tempbuf []byte
 		tempbuf = append(tempbuf, []byte(decorateFilename(realname) + "\n" + "----\n\n")...)
 		nbytes = append(tempbuf, nbytes...)
-		nbytes = append(nbytes, []byte("\n\n")...)
+
+		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
-			nbytes = append(nbytes, []byte("[previous](" + previous + ")\n")...)
+			nbytes = append(nbytes, []byte("+ previous: [" + decorateFilename(previous) + "](" + previous + ")\n")...)
 		}
 		if key != len(filenames)-1 {
 			next := filenames[key+1][12:]
-			nbytes = append(nbytes, []byte("[next](" + next + ")\n")...)
+			nbytes = append(nbytes, []byte("+ next: [" + decorateFilename(next) + "](" + next + ")\n")...)
 		}
 
 		pbytes, err := ioutil.ReadFile(realname)
