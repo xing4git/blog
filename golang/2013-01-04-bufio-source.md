@@ -41,6 +41,9 @@ if ok && len(b.buf) >= size {
 如果rd已经是一个*bufio.Reader对象了, 且缓冲区大小也满足条件, 则直接返回rd自身, 以防止不必要的包装.
 
 ### Read
+```go
+func (b *Reader) Read(p []byte) (n int, err error)
+```
 *bufio.Reader实现了io.Reader接口, 就是因为*bufio.Reader具有Read方法.  
 如果缓冲区中没有数据:
 ```go
@@ -88,7 +91,139 @@ func (b *Reader) Buffered() int { return b.w - b.r }
 ```
 
 ### ReadSlice
+```go
+func (b *Reader) ReadSlice(delim byte) (line []byte, err error)
+```
+读取并返回byte数据, 直到读取到指定的delim, 或者发生error, 或者缓冲区已满.  
+如果缓冲区中的数据满足条件, 则直接返回:
+```go
+if i := bytes.IndexByte(b.buf[b.r:b.w], delim); i >= 0 {
+	line1 := b.buf[b.r : b.r+i+1]
+	b.r += i + 1
+	return line1, nil
+}
+```
+否则, 将数据读取到缓冲区后再进行判断:
+```go
+for {
+	if b.err != nil {
+		line := b.buf[b.r:b.w]
+		b.r = b.w
+		return line, b.readErr()
+	}
 
+	// 记录当前缓冲区中的字节数
+	n := b.Buffered()
+	b.fill()
+
+	// 在新读取的数据中搜索
+	if i := bytes.IndexByte(b.buf[n:b.w], delim); i >= 0 {
+		line := b.buf[0 : n+i+1]
+		b.r = n + i + 1
+		return line, nil
+	}
+
+	// 判断缓冲区是否已满
+	if b.Buffered() >= len(b.buf) {
+		b.r = b.w
+		return b.buf, ErrBufferFull
+	}
+}
+```
+
+### ReadLine
+```go
+func (b *Reader) ReadLine() (line []byte, isPrefix bool, err error)
+```
+读取一行数据, 如果某行太长(超过缓冲区大小), 先返回开头部分, 并设置isPrefix为true, 其余部分将在随后的ReadLine中返回.  
+先调用ReadSlice得到初步数据:
+```go
+line, err = b.ReadSlice('\n')
+```
+如果err是ErrBufferFull(缓冲区已满), 处理数据后返回给调用者:
+```go
+if err == ErrBufferFull {
+	// 处理\r\n的情形
+	if len(line) > 0 && line[len(line)-1] == '\r' {
+		if b.r == 0 {
+			// should be unreachable
+			panic("bufio: tried to rewind past start of buffer")
+		}
+		// 将\r放回缓冲区, 并将其从line中删除, 以便下次调用ReadLine时一并处理'\r\n'
+		b.r--
+		line = line[:len(line)-1]
+	}
+	// 返回的isPrefix为true, 表明该行太长, line只是该行的一部分数据
+	return line, true, nil
+}
+```
+如果line的最后一个字节确实是'\n', 则将'\n'或者'\r\n'从line中删除后返回:
+```go
+if line[len(line)-1] == '\n' {
+	drop := 1
+	if len(line) > 1 && line[len(line)-2] == '\r' {
+		drop = 2
+	}
+	line = line[:len(line)-drop]
+}
+```
+
+### ReadBytes
+```go
+func (b *Reader) ReadBytes(delim byte) (line []byte, err error)
+```
+ReadBytes和ReadSlice的区别在于, ReadBytes不会因为缓冲区已满就停止搜索, 而是继续下去, 直到读取到指定的delim, 或者发生了error(通常是io.EOF).
+```go
+var frag []byte
+var full [][]byte
+err = nil
+
+for {
+	var e error
+	frag, e = b.ReadSlice(delim)
+	if e == nil { // 读取到指定的delim
+		break
+	}
+	if e != ErrBufferFull { // 发生了ErrBufferFull之外的error
+		err = e
+		break
+	}
+
+	// 处理err为ErrBufferFull的情形
+	// 将frag中的数据copy一份, 保存在full中.
+	buf := make([]byte, len(frag))
+	copy(buf, frag)
+	full = append(full, buf)
+}
+```
+如此以来, 数据就存储在full和frag中了, 接下来需要将2者中存储的数据合并到一个buffer中:
+```go
+// 计算buf所需的length
+n := 0
+for i := range full {
+	n += len(full[i])
+}
+n += len(frag)
+
+// 将数据从full和frag中copy到buf中, 注意copy的顺序
+buf := make([]byte, n)
+n = 0
+for i := range full {
+	n += copy(buf[n:], full[i])
+}
+copy(buf[n:], frag)
+return buf, err
+```
+
+### ReadString
+ReadString和ReadBytes类似, 区别在于ReadString返回的是string:
+```go
+func (b *Reader) ReadString(delim byte) (line string, err error) {
+	bytes, e := b.ReadBytes(delim)
+	return string(bytes), e
+}
+```
+可以调用ReadString('\n')代替ReadLine, 此时不需要处理烦人的isPrefix标记, 因为对于ReadString('\n')来说, 不管行有多长, 都只会一次性返回.
 
 
 
