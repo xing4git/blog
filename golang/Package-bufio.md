@@ -1,4 +1,4 @@
-Bufio Source
+Package bufio
 ----
 
 bufio包提供了带有缓冲功能的Reader和Writer, 应用了`装饰者模式`.  
@@ -359,3 +359,4 @@ func (b *Writer) WriteByte(c byte) error {
 links
 -----
 + [目录](../golang)
++ 下一节: [Package ioutil](Package-ioutil.md)
