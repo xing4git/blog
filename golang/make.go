@@ -46,7 +46,7 @@ func main() {
 	readme.WriteString("-----\n\n")
 	change.WriteString("update README.md;")
 
-	for _, value := range filenames {
+	for key, value := range filenames {
 		realname := value[12:]
 		readme.WriteString("####" + decorateFilename(realname) + "\n")
 
@@ -70,6 +70,15 @@ func main() {
 		var tempbuf []byte
 		tempbuf = append(tempbuf, []byte(decorateFilename(realname) + "\n" + "----\n\n")...)
 		nbytes = append(tempbuf, nbytes...)
+		nbytes = append(nbytes, []byte("\n\n")...)
+		if key != 0 {
+			previous := filenames[key-1][12:]
+			nbytes = append(nbytes, []byte("[previous](" + previous + ")\n")...)
+		}
+		if key != len(filenames)-1 {
+			next := filenames[key+1][12:]
+			nbytes = append(nbytes, []byte("[next](" + next + ")\n")...)
+		}
 
 		pbytes, err := ioutil.ReadFile(realname)
 		if err == nil && compareBytes(nbytes, pbytes) == 0 {
