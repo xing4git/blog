@@ -54,7 +54,7 @@ func main() {
 		checkErr(err)
 		defer file.Close()
 
-		readme.WriteString(value[1:11] + "\n\n")
+		readme.WriteString(value[1:11] + "\n")
 		buf := bufio.NewReader(file)
 		line, err := buf.ReadString('\n')
 		checkErr(err)
