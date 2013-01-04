@@ -67,7 +67,7 @@ func main() {
 		line, err = buf.ReadString('\n')
 		checkErr(err)
 		readme.WriteString(string(line[0:len(line)-1]))
-		readme.WriteString("...[Read More](" + realname + ")\n")
+		readme.WriteString("...[Read More](golang/" + realname + ")\n")
 
 		file.Seek(0, os.SEEK_SET)
 		nbytes, err := ioutil.ReadAll(file)
