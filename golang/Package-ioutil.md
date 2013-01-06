@@ -111,6 +111,33 @@ func (devNull) Write(p []byte) (int, error) {
 }
 ```
 
+### TempFile
+使用指定的文件名前缀, 在指定的目录中, 创建临时文件.
+```go
+func TempFile(dir, prefix string) (f *os.File, err error) {
+	// 如果dir为空, 使用默认的临时目录, 在linux下, 该目录为/tmp
+	if dir == "" {
+		dir = os.TempDir()
+	}
+
+	nconflict := 0
+	for i := 0; i < 10000; i++ {
+		name := filepath.Join(dir, prefix+nextSuffix())
+		// 同时指定了os.O_CREATE, os.O_EXCL调用OpenFile时, 如果文件已存在, 该方法将返回error
+		f, err = os.OpenFile(name, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+		if os.IsExist(err) {
+			// 冲突次数超过10时, 调整随机种子
+			if nconflict++; nconflict > 10 {
+				rand = reseed()
+			}
+			continue
+		}
+		break
+	}
+	return
+}
+```
+
 
 
 
