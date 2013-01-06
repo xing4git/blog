@@ -16,7 +16,7 @@ func readAll(r io.Reader, capacity int64) (b []byte, err error) {
 	buf := bytes.NewBuffer(make([]byte, 0, capacity))
 	defer func() {
 		// readAll方法试图将io.Reader(通常是文件)的所有内容读进内存
-		// 如果待读取的数据量超过一定程度, 需要申请的内存可能操作系统限制
+		// 如果待读取的数据量过大, 需要申请的内存可能超过操作系统限制
 		// 此时将导致buf.ReadFrom方法发生panic, recover该panic时能得到bytes.ErrTooLarge
 		// 在defer调用中, 只处理上述提到的panic, 将其转换为err返回给调用方, 而保持其他未知的panic
 		e := recover()
