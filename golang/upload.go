@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	// "io"
 	"bufio"
 	"bytes"
 	"github.com/xing4git/cmdutils"
