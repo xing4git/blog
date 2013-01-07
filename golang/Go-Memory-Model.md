@@ -29,7 +29,30 @@ Synchronization
 程序的所有初始化操作都发生在同一个goroutine中. 程序的初始化操作包括: 初始化包级变量和常量, 执行init函数.  
 如果包p import包q, 那么q的init函数happens before p的init函数.  
 main.main函数happens after所有init函数.  
-+ 创建goroutine
++ goroutine的创建  
+我们知道, goroutine由go语句创建. go语句happens before goroutine的执行. 例如:
+```go
+var a string
+func f() {
+	print(a)
+}
+func hello() {
+	a = "hello world"
+	go f()
+}
+```
++ goroutine的结束  
+goroutine的结束不happens before于任何事件.
+```go
+var a string
+func hello() {
+	go func() { a = "hello" }
+	print(a)
+}
+```
+此时不能确保输出的结果一定是"hello".
++ Channel通信  
+
 
 
 
