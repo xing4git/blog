@@ -13,3 +13,7 @@ ioutil包提供了一些io操作的便利方法....[Read More](golang/Pkg-ioutil
 *2013-01-06*
 list包提供双向链表的实现...[Read More](golang/Pkg-list.md)
 
+####Go Memory Model
+*2013-01-07*
+本文是对[The Go Memory Model](http://golang.org/ref/mem)的翻译和理解....[Read More](golang/Go-Memory-Model.md)
+
