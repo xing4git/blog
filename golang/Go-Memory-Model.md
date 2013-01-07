@@ -19,7 +19,7 @@ Happens Before
 - w happens before r.
 - 任何额外的对v的write操作必须happens before w, 或者happens after r.
 
-2对条件看似差不多, 其实第二对条件比第一对条件要求更严格一些: 第二对条件排除了happens concurrently情形, 也就是说r和w不能happens concurrently, 也不能存在额外的write操作happens concurrently with r or w.
+2对条件看似差不多, 其实第二对条件比第一对条件要求更严格一些: 第二对条件排除了happens concurrently情形, 也就是说r和w不能happens concurrently, 也不能存在额外的write操作happens concurrently with r or w.  
 在单goroutine环境中, 不可能存在happens concurrently, 所以此时2对条件是等价的. 当多个goroutine可以访问变量v时, 就需要通过同步以确保happens before.
 
 
@@ -30,7 +30,7 @@ Synchronization
 如果包p import包q, 那么q的init函数happens before p的init函数.  
 main.main函数happens after所有init函数.  
 + goroutine的创建  
-我们知道, goroutine由go语句创建. go语句happens before goroutine的执行. 例如:
+我们知道, goroutine由go语句创建. go语句happens before goroutine的执行. 例如:  
 ```go
 var a string
 func f() {
@@ -40,16 +40,16 @@ func hello() {
 	a = "hello world"
 	go f()
 }
-```
+```  
 + goroutine的结束  
-goroutine的结束不happens before于任何事件.
+goroutine的结束不happens before于任何事件.  
 ```go
 var a string
 func hello() {
 	go func() { a = "hello" }
 	print(a)
 }
-```
+```  
 此时不能确保输出的结果一定是"hello".
 + Channel通信  
 
