@@ -248,4 +248,3 @@ links
 -----
 + [目录](../golang)
 + 上一节: [Pkg ioutil](Pkg-ioutil.md)
-+ 下一节: [Go Memory Model](Go-Memory-Model.md)
