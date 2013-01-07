@@ -14,10 +14,10 @@ Happens Before
 在单个goroutine中, happens before顺序由程序语句的书写顺序决定.  
 *允许*对变量v的read操作r观察到对v的write结果w, 需要满足:
 - r不happens before w.
-- 在w之后, r之前, 没有额外的write操作.
+- 在w之后, r之前, 没有额外的write操作.  
 请注意, *允许*不代表*一定*, 如果要*确保*对变量v的read操作r观察到对v的write结果w, 需要满足:
 - w happens before r.
-- 任何对v的write操作必须happens before w, 或者happens after r.
+- 任何对v的write操作必须happens before w, 或者happens after r.  
 这对条件比上对条件要求更严格一些: 
 
 
