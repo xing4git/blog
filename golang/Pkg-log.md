@@ -135,16 +135,99 @@ func (l *Logger) formatHeader(buf *[]byte, t time.Time, file string, line int) {
 + flag对应的信息, 创建Logger时指定. 根据flag的不同取值, 此处可能包含日期, 时间, 文件名等信息.
 + 真实的日志消息. 每次调用Output时指定.
 
+### 格式化输出方法
+这些方法都在内部调用Logger.Output, 其calldepth设定为2.
+```go
+func (l *Logger) Printf(format string, v ...interface{}) {
+	l.Output(2, fmt.Sprintf(format, v...))
+}
 
+func (l *Logger) Print(v ...interface{}) { l.Output(2, fmt.Sprint(v...)) }
 
+func (l *Logger) Println(v ...interface{}) { l.Output(2, fmt.Sprintln(v...)) }
 
+func (l *Logger) Fatal(v ...interface{}) {
+	l.Output(2, fmt.Sprint(v...))
+	// 结束程序
+	os.Exit(1)
+}
 
+func (l *Logger) Fatalf(format string, v ...interface{}) {
+	l.Output(2, fmt.Sprintf(format, v...))
+	os.Exit(1)
+}
 
+func (l *Logger) Fatalln(v ...interface{}) {
+	l.Output(2, fmt.Sprintln(v...))
+	os.Exit(1)
+}
 
+func (l *Logger) Panic(v ...interface{}) {
+	s := fmt.Sprint(v...)
+	l.Output(2, s)
+	panic(s)
+}
 
+func (l *Logger) Panicf(format string, v ...interface{}) {
+	s := fmt.Sprintf(format, v...)
+	l.Output(2, s)
+	panic(s)
+}
 
+func (l *Logger) Panicln(v ...interface{}) {
+	s := fmt.Sprintln(v...)
+	l.Output(2, s)
+	panic(s)
+}
+```
 
+### Logger.Flags和Logger.SetFlags
+返回或设置Logger的flag.
+```go
+func (l *Logger) Flags() int {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.flag
+}
 
+func (l *Logger) SetFlags(flag int) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.flag = flag
+}
+```
+
+### Logger.Prefix和Logger.SetPrefix
+返回或设置Logger的prefix.
+```go
+func (l *Logger) Prefix() string {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	return l.prefix
+}
+
+func (l *Logger) SetPrefix(prefix string) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+	l.prefix = prefix
+}
+```
+
+### Logger.SetOutput
+设置Logger的输出目标.
+```go
+func SetOutput(w io.Writer) {
+	std.mu.Lock()
+	defer std.mu.Unlock()
+	std.out = w
+}
+```
+
+### std
+std是package内部定义的一个Logger.
+```go
+var std = New(os.Stderr, "", LstdFlags)
+```
 
 
 
