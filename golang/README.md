@@ -13,3 +13,7 @@ ioutil包提供了一些io操作的便利方法....[Read More](golang/Pkg-ioutil
 *2013-01-06*
 list包提供双向链表的实现...[Read More](golang/Pkg-list.md)
 
+####Pkg log
+*2013-01-11*
+Package log实现了简单的日志功能. 定义了类型Logger, Logger用于格式化输出日志.同时, 预定义了名为std的Logger对象, 用于输出日志到stderr....[Read More](golang/Pkg-log.md)
+

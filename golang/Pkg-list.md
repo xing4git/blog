@@ -248,3 +248,4 @@ links
 -----
 + [目录](../golang)
 + 上一节: [Pkg ioutil](Pkg-ioutil.md)
++ 下一节: [Pkg log](Pkg-log.md)
