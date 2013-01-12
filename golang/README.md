@@ -17,3 +17,7 @@ list包提供双向链表的实现...[Read More](golang/Pkg-list.md)
 *2013-01-11*
 Package log实现了简单的日志功能. 定义了类型Logger, 用于输出格式化日志.  同时, 预定义了名为std的Logger对象, 用于输出日志到stderr.  ...[Read More](golang/Pkg-log.md)
 
+####Pkg sort
+*2013-01-12*
+Package sort为slice或者自定义的集合提供排序功能....[Read More](golang/Pkg-sort.md)
+
