@@ -1,12 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"bufio"
 	"bytes"
+	"fmt"
 	"github.com/xing4git/cmdutils"
 	"io/ioutil"
+	"os"
 	"regexp"
 	"sort"
 )
@@ -18,7 +18,7 @@ var (
 )
 
 var (
-	reg = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
+	reg       = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
 	filenames = make([]string, 0)
 )
 
@@ -57,28 +57,28 @@ func main() {
 		buf := bufio.NewReader(file)
 		line, err := buf.ReadString('\n')
 		checkErr(err)
-		readme.WriteString(string(line[0:len(line)-1]))
+		readme.WriteString(string(line[0 : len(line)-1]))
 		line, err = buf.ReadString('\n')
 		checkErr(err)
-		readme.WriteString(string(line[0:len(line)-1]))
+		readme.WriteString(string(line[0 : len(line)-1]))
 		readme.WriteString("...[Read More](golang/" + realname + ")\n\n")
 
 		file.Seek(0, os.SEEK_SET)
 		nbytes, err := ioutil.ReadAll(file)
 		checkErr(err)
 		var tempbuf []byte
-		tempbuf = append(tempbuf, []byte(decorateFilename(realname) + "\n" + "----\n\n")...)
+		tempbuf = append(tempbuf, []byte(decorateFilename(realname)+"\n"+"----\n\n")...)
 		nbytes = append(tempbuf, nbytes...)
 
-		nbytes = append(nbytes, []byte("\n\n" + "links\n" + "-----\n")...)
+		nbytes = append(nbytes, []byte("\n\n"+"links\n"+"-----\n")...)
 		nbytes = append(nbytes, []byte("+ [目录](../golang)\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
-			nbytes = append(nbytes, []byte("+ 上一节: [" + decorateFilename(previous) + "](" + previous + ")\n")...)
+			nbytes = append(nbytes, []byte("+ 上一节: ["+decorateFilename(previous)+"]("+previous+")\n")...)
 		}
 		if key != len(filenames)-1 {
 			next := filenames[key+1][12:]
-			nbytes = append(nbytes, []byte("+ 下一节: [" + decorateFilename(next) + "](" + next + ")\n")...)
+			nbytes = append(nbytes, []byte("+ 下一节: ["+decorateFilename(next)+"]("+next+")\n")...)
 		}
 
 		pbytes, err := ioutil.ReadFile(realname)
@@ -107,7 +107,7 @@ func main() {
 func decorateFilename(str string) string {
 	bytes := []byte(str)
 	var suffixStart int = -1
-	for i := len(str)-1; i >= 0; i-- {
+	for i := len(str) - 1; i >= 0; i-- {
 		if bytes[i] == '.' {
 			suffixStart = i
 			break

@@ -21,3 +21,7 @@ Package log实现了简单的日志功能. 定义了类型Logger, 用于输出�
 *2013-01-12*
 Package sort为slice或者自定义的集合提供排序功能....[Read More](golang/Pkg-sort.md)
 
+####Pkg expvar
+*2013-01-13*
+package expvar提供了通过web查看应用当前状态的方式....[Read More](golang/Pkg-expvar.go)
+
