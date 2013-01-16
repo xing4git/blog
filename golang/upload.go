@@ -29,6 +29,7 @@ func main() {
 
 	fis, err := dir.Readdir(0)
 	checkErr(err)
+	fmt.Print(fis)
 
 	for i := 0; i < len(fis); i++ {
 		fi := fis[i]
