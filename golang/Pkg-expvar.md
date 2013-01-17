@@ -136,7 +136,7 @@ func (v *String) Set(value string) {
 ```
 
 ### Map
-Map的key是对`map[string]Var`的包装, 同时其自身也实现了Var接口.
+Map是对`map[string]Var`的包装, 同时其自身也实现了Var接口.
 ```go
 type Map struct {
 	m  map[string]Var
