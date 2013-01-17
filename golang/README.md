@@ -23,5 +23,5 @@ Package sort为slice或者自定义的集合提供排序功能....[Read More](go
 
 ####Pkg expvar
 *2013-01-13*
-package expvar是用于获取public variables的标准接口. 通过http访问/debug/var, 即可得到json格式的public variables.expvar默认publish了2个variable: cmdline和memstats, 分别用于获取程序启动时的命令行参数和当前内存使用情况....[Read More](golang/Pkg-expvar.md)
+Package expvar是用于获取public variables的标准接口. 通过http访问/debug/vars, 即可得到json格式的public variables.  expvar默认publish了2个variable: cmdline和memstats, 分别用于获取程序启动时的命令行参数和当前内存使用情况.  ...[Read More](golang/Pkg-expvar.md)
 

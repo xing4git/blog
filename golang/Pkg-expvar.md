@@ -1,16 +1,15 @@
 Pkg expvar
 ----
 
-package expvar是用于获取public variables的标准接口. 通过http访问/debug/var, 即可得到json格式的public variables.
-expvar默认publish了2个variable: cmdline和memstats, 分别用于获取程序启动时的命令行参数和当前内存使用情况.
+Package expvar是用于获取public variables的标准接口. 通过http访问/debug/vars, 即可得到json格式的public variables.  
+expvar默认publish了2个variable: cmdline和memstats, 分别用于获取程序启动时的命令行参数和当前内存使用情况.  
 可根据自己的需要publish其他variable.
-
 
 ### init
 初始化操作.
 ```go
 func init() {
-	http.HandleFunc("/debug/vars", expvarHandler)
+	http.HandleFunc("/debug/varss", expvarHandler)
 	// publish cmdline and memstats
 	Publish("cmdline", Func(cmdline))
 	Publish("memstats", Func(memstats))
@@ -196,7 +195,7 @@ func (f Func) String() string {
 	return string(v)
 }
 ```
-Publish Func类型的variable之后, 访问/debug/var将会调用该variable的String方法, 而String方法中会调用Func函数, 因此可动态的获取值.  
+Publish Func类型的variable之后, 访问/debug/vars将会调用该variable的String方法, 而String方法中会调用Func函数, 因此可动态的获取值.  
 cmdline和memstats是对Func的典型应用:
 ```go
 func cmdline() interface{} {
