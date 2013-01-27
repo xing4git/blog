@@ -127,22 +127,6 @@ func decorateFilename(str string) string {
 	return string(bytes)
 }
 
-func compareBytes(pbytes []byte, nbytes []byte) int {
-	for i := 0; i < len(pbytes) && i < len(nbytes); i++ {
-		if pbytes[i] > nbytes[i] {
-			return 1
-		} else if pbytes[i] < nbytes[i] {
-			return -1
-		}
-	}
-	if len(pbytes) > len(nbytes) {
-		return 1
-	} else if len(pbytes) < len(nbytes) {
-		return -1
-	}
-	return 0
-}
-
 func checkErr(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
