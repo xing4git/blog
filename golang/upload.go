@@ -82,7 +82,7 @@ func main() {
 		}
 
 		pbytes, err := ioutil.ReadFile(realname)
-		if err == nil && compareBytes(nbytes, pbytes) == 0 {
+		if err == nil && bytes.Equal(pbytes, nbytes) {
 			fmt.Println("no change file:", realname)
 			continue
 		}
