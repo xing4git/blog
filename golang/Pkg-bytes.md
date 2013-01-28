@@ -361,6 +361,64 @@ func HasSuffix(s, suffix []byte) bool {
 }
 ```
 
+### Repeat
+返回b重复count次后的结果.
+```go
+func Repeat(b []byte, count int) []byte {
+	nb := make([]byte, len(b)*count)
+	bp := 0
+	for i := 0; i < count; i++ {
+		for j := 0; j < len(b); j++ {
+			nb[bp] = b[j]
+			bp++
+		}
+	}
+	return nb
+}
+```
+
+### Map
+对s中的每个rune调用mapping方法, 如果mapping返回的rune小于0则丢弃该rune, 否则将mapping的返回值编码为byte数组后累积起来, 最后一块返回.
+```go
+func Map(mapping func(r rune) rune, s []byte) []byte {
+	maxbytes := len(s)
+	nbytes := 0 // 当前累积的字节数
+	b := make([]byte, maxbytes)
+
+	for i := 0; i < len(s); {
+		// 得到rune
+		wid := 1
+		r := rune(s[i])
+		if r >= utf8.RuneSelf {
+			r, wid = utf8.DecodeRune(s[i:])
+		}
+
+		r = mapping(r)
+		if r >= 0 {
+			if nbytes+utf8.RuneLen(r) > maxbytes {
+				// 增大buffer
+				maxbytes = maxbytes*2 + utf8.UTFMax
+				nb := make([]byte, maxbytes)
+				copy(nb, b[0:nbytes])
+				b = nb
+			}
+			// 将mapping的结果编码后保存到b中
+			nbytes += utf8.EncodeRune(b[nbytes:maxbytes], r)
+		}
+		i += wid
+	}
+
+	return b[0:nbytes]
+}
+```
+
+### ToUpper, ToLower
+都是对Map方法的包装
+```go
+func ToUpper(s []byte) []byte { return Map(unicode.ToUpper, s) }
+func ToLower(s []byte) []byte { return Map(unicode.ToLower, s) }
+```
+
 
 
 links
