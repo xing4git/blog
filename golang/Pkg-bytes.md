@@ -1,7 +1,7 @@
 Pkg bytes
 ----
 
-Package bytes实现了一系列操作byte slice方法.
+Package bytes实现了一系列操作byte slice的方法.
 
 ### Compare
 比较byte slice a和b, 如果`a == b`返回0, `a < b`返回-1, `a > b`返回1.
@@ -218,6 +218,148 @@ func LastIndexAny(s []byte, chars string) int {
 }
 ```
 
+### Split
+bytes包中包含多个Split函数: SplitN, SplitAfterN, Split, SplitAfter等. 这些函数都是对genSplit的包装.
+```go
+// 将s以sep分割. sepSave表示子byte数组中包含多少个sep中的字节数.
+// n表示最多包含多少个子byte数组:
+// n > 0 取n个子byte数组, n == 0 返回nil, n < 0 时返回所有子byte数组
+func genSplit(s, sep []byte, sepSave, n int) [][]byte {
+	// 根据n的值确定要返回多少个byte数组
+	if n == 0 {
+		return nil
+	}
+	if len(sep) == 0 {
+		return explode(s, n)
+	}
+	if n < 0 {
+		n = Count(s, sep) + 1
+	}
+
+	c := sep[0]
+	start := 0
+	a := make([][]byte, n)
+	na := 0
+	for i := 0; i+len(sep) <= len(s) && na+1 < n; i++ {
+		if s[i] == c && (len(sep) == 1 || Equal(s[i:i+len(sep)], sep)) {
+			// 找到其中一个, 从中可以看出sepSave的作用
+			a[na] = s[start : i+sepSave]
+			na++
+			start = i + len(sep)
+			i += len(sep) - 1
+		}
+	}
+	// 剩余的数据都归类到最后一个子byte数组
+	a[na] = s[start:]
+
+	return a[0 : na+1]
+}
+
+// 将s以sep作为分界点分割为最多n个子byte数组, 每个子byte不数组包含sep
+func SplitN(s, sep []byte, n int) [][]byte { return genSplit(s, sep, 0, n) }
+
+// 将s以sep作为分界点分割为最多n个子byte数组, 每个子byte数组包含sep
+func SplitAfterN(s, sep []byte, n int) [][]byte {
+	return genSplit(s, sep, len(sep), n)
+}
+
+// 将s以sep作为分界点分割为若干个子byte数组, 不限制子byte数组的个数. 每个子byte不数组包含sep
+func Split(s, sep []byte) [][]byte { return genSplit(s, sep, 0, -1) }
+
+// 将s以sep作为分界点分割为若干个子byte数组, 不限制子byte数组的个数. 每个子byte数组包含sep
+func SplitAfter(s, sep []byte) [][]byte {
+	return genSplit(s, sep, len(sep), -1)
+}
+```
+
+### Fields
+将s以空白字符作为分界点分割为若干个子byte数组.
+```go
+func Fields(s []byte) [][]byte {
+	return FieldsFunc(s, unicode.IsSpace)
+}
+
+// 对于s中的每个rune, 都调用f函数. 如果f函数返回true, 则将其作为分界点.
+func FieldsFunc(s []byte, f func(rune) bool) [][]byte {
+	// 计算得到子byte数组的长度
+	n := 0
+	inField := false
+	for i := 0; i < len(s); {
+		r, size := utf8.DecodeRune(s[i:])
+		wasInField := inField
+		inField = !f(r)
+		if inField && !wasInField {
+			n++
+		}
+		i += size
+	}
+
+	a := make([][]byte, n)
+	na := 0
+	fieldStart := -1
+	for i := 0; i <= len(s) && na < n; {
+		r, size := utf8.DecodeRune(s[i:])
+		if fieldStart < 0 && size > 0 && !f(r) {
+			fieldStart = i
+			i += size
+			continue
+		}
+		if fieldStart >= 0 && (size == 0 || f(r)) {
+			a[na] = s[fieldStart:i]
+			na++
+			fieldStart = -1
+		}
+		if size == 0 {
+			break
+		}
+		i += size
+	}
+	return a[0:na]
+}
+```
+
+### Join
+将a的每一个item通过sep连接在一起, 形成一个大的byte数组.
+```go
+func Join(a [][]byte, sep []byte) []byte {
+	// 处理特殊情况
+	if len(a) == 0 {
+		return []byte{}
+	}
+	if len(a) == 1 {
+		return a[0]
+	}
+
+	// 计算返回结果的len
+	n := len(sep) * (len(a) - 1)
+	for i := 0; i < len(a); i++ {
+		n += len(a[i])
+	}
+
+	// copy
+	b := make([]byte, n)
+	bp := copy(b, a[0])
+	for _, s := range a[1:] {
+		bp += copy(b[bp:], sep)
+		bp += copy(b[bp:], s)
+	}
+
+	return b
+}
+```
+
+### HasPrefix, HasSuffix
+代码很简单.
+```go
+// 是否以prefix开端
+func HasPrefix(s, prefix []byte) bool {
+	return len(s) >= len(prefix) && Equal(s[0:len(prefix)], prefix)
+}
+// 是否以suffix结尾
+func HasSuffix(s, suffix []byte) bool {
+	return len(s) >= len(suffix) && Equal(s[len(s)-len(suffix):], suffix)
+}
+```
 
 
 

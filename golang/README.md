@@ -27,5 +27,5 @@ Package expvar是用于获取public variables的标准接口. 通过http访问/d
 
 ####Pkg bytes
 *2013-01-26*
-Package bytes实现了一系列操作byte slice方法....[Read More](golang/Pkg-bytes.md)
+Package bytes实现了一系列操作byte slice的方法....[Read More](golang/Pkg-bytes.md)
 
