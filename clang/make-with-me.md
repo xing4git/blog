@@ -97,4 +97,4 @@ clean :
 
 links
 -----
-+ [目录](../golang)
++ [目录](../clang)

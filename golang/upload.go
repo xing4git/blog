@@ -26,6 +26,7 @@ var (
 
 func init() {
 	flag.Parse()
+	flag.PrintDefaults()
 	fmt.Println("current dir name: " + *dirname)
 }
 
