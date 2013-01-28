@@ -3,11 +3,11 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"flag"
 	"fmt"
 	"github.com/xing4git/cmdutils"
 	"io/ioutil"
 	"os"
-	"path/filepath"
 	"regexp"
 	"sort"
 )
@@ -21,16 +21,12 @@ var (
 var (
 	reg       = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
 	filenames = make([]string, 0)
-	dirname   string
+	dirname   = flag.String("d", "golang", "current dir name")
 )
 
 func init() {
-	fi, err := os.Stat(".")
-	checkErr(err)
-
-	dirname = fi.Name()
-	dirname = filepath.Dir(".")
-	fmt.Println("current dir: " + dirname)
+	flag.Parse()
+	fmt.Println("current dir name: " + *dirname)
 }
 
 func main() {
@@ -72,7 +68,7 @@ func main() {
 		line, err = buf.ReadString('\n')
 		checkErr(err)
 		readme.WriteString(string(line[0 : len(line)-1]))
-		readme.WriteString("...[Read More](" + dirname + "/" + realname + ")\n\n")
+		readme.WriteString("...[Read More](" + *dirname + "/" + realname + ")\n\n")
 
 		file.Seek(0, os.SEEK_SET)
 		nbytes, err := ioutil.ReadAll(file)
@@ -82,7 +78,7 @@ func main() {
 		nbytes = append(tempbuf, nbytes...)
 
 		nbytes = append(nbytes, []byte("\n\n"+"links\n"+"-----\n")...)
-		nbytes = append(nbytes, []byte("+ [目录](../"+dirname+")\n")...)
+		nbytes = append(nbytes, []byte("+ [目录](../"+*dirname+")\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
 			nbytes = append(nbytes, []byte("+ 上一节: ["+decorateFilename(previous)+"]("+previous+")\n")...)

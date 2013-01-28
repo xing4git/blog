@@ -246,6 +246,6 @@ func personSearch() {
 
 links
 -----
-+ [目录](../.)
++ [目录](../golang)
 + 上一节: [Pkg log](Pkg-log.md)
 + 下一节: [Pkg expvar](Pkg-expvar.md)
