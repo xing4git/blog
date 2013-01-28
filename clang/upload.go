@@ -7,6 +7,7 @@ import (
 	"github.com/xing4git/cmdutils"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 	"regexp"
 	"sort"
 )
@@ -28,6 +29,7 @@ func init() {
 	checkErr(err)
 
 	dirname = fi.Name()
+	dirname = filepath.Dir(".")
 	fmt.Println("current dir: " + dirname)
 }
 
