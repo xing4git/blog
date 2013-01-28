@@ -86,7 +86,7 @@ func Count(s, sep []byte) int {
 ```
 
 ### Index
-计算s中首个sep的索引, -1表示s中不包含sep.
+s中首次出现sep序列的索引, -1表示s中不包含sep.
 ```go
 func Index(s, sep []byte) int {
 	n := len(sep)
@@ -119,11 +119,107 @@ func Index(s, sep []byte) int {
 		}
 		i++
 	}
+
 	return -1
 }
 ```
 
-### 
+### LastIndex
+s中最后出现sep序列的索引, -1同样表示s中不包含sep.
+```go
+func LastIndex(s, sep []byte) int {
+	n := len(sep)
+	if n == 0 {
+		return len(s)
+	}
+
+	// 这里的代码比Index中的代码更容易理解
+	c := sep[0]
+	for i := len(s) - n; i >= 0; i-- {
+		if s[i] == c && (n == 1 || Equal(s[i:i+n], sep)) {
+			return i
+		}
+	}
+
+	return -1
+}
+```
+
+
+### Contains
+判断b中是否包含指定的subslice.
+```go
+func Contains(b, subslice []byte) bool {
+	return Index(b, subslice) != -1
+}
+```
+
+### IndexRune
+将s当做utf8编码的unicode字符序列, 返回r在s中的索引.
+```go
+func IndexRune(s []byte, r rune) int {
+	for i := 0; i < len(s); {
+		// 返回s[i:]中的第一个rune, size为该rune所占的字节数
+		r1, size := utf8.DecodeRune(s[i:])
+		if r == r1 {
+			return i
+		}
+		i += size
+	}
+	return -1
+}
+```
+
+### IndexAny
+chars中任意一个字符在s中首次出现的索引.
+```go
+func IndexAny(s []byte, chars string) int {
+	if len(chars) > 0 {
+		var r rune
+		var width int
+
+		for i := 0; i < len(s); i += width {
+			// r为s[i:]中的第一个rune, width为该rune所占的字节数
+			r = rune(s[i])
+			if r < utf8.RuneSelf {
+				width = 1
+			} else {
+				r, width = utf8.DecodeRune(s[i:])
+			}
+
+			// 如果r是chars其中一员, 直接返回
+			for _, ch := range chars {
+				if r == ch {
+					return i
+				}
+			}
+		}
+	}
+	return -1
+}
+```
+
+### LastIndexAny
+chars中任意一个字符在s中最后出现的索引.
+```go
+func LastIndexAny(s []byte, chars string) int {
+	if len(chars) > 0 {
+		for i := len(s); i > 0; {
+			r, size := utf8.DecodeLastRune(s[0:i])
+			i -= size
+			for _, ch := range chars {
+				if r == ch {
+					return i
+				}
+			}
+		}
+	}
+	return -1
+}
+```
+
+
+
 
 links
 -----
