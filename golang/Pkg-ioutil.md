@@ -157,6 +157,6 @@ func TempFile(dir, prefix string) (f *os.File, err error) {
 
 links
 -----
-+ [目录](../golang)
++ [目录](../.)
 + 上一节: [Pkg bufio](Pkg-bufio.md)
 + 下一节: [Pkg list](Pkg-list.md)

@@ -20,7 +20,16 @@ var (
 var (
 	reg       = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
 	filenames = make([]string, 0)
+	dirname   string
 )
+
+func init() {
+	fi, err := os.Stat(".")
+	checkErr(err)
+
+	dirname = fi.Name()
+	fmt.Println("current dir: " + dirname)
+}
 
 func main() {
 	dir, err := os.Open(".")
@@ -61,7 +70,7 @@ func main() {
 		line, err = buf.ReadString('\n')
 		checkErr(err)
 		readme.WriteString(string(line[0 : len(line)-1]))
-		readme.WriteString("...[Read More](golang/" + realname + ")\n\n")
+		readme.WriteString("...[Read More](" + dirname + "/" + realname + ")\n\n")
 
 		file.Seek(0, os.SEEK_SET)
 		nbytes, err := ioutil.ReadAll(file)
@@ -71,7 +80,7 @@ func main() {
 		nbytes = append(tempbuf, nbytes...)
 
 		nbytes = append(nbytes, []byte("\n\n"+"links\n"+"-----\n")...)
-		nbytes = append(nbytes, []byte("+ [目录](../golang)\n")...)
+		nbytes = append(nbytes, []byte("+ [目录](../"+dirname+")\n")...)
 		if key != 0 {
 			previous := filenames[key-1][12:]
 			nbytes = append(nbytes, []byte("+ 上一节: ["+decorateFilename(previous)+"]("+previous+")\n")...)

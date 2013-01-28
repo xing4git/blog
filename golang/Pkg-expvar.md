@@ -235,6 +235,6 @@ func visitCnt() interface{} {
 
 links
 -----
-+ [目录](../golang)
++ [目录](../.)
 + 上一节: [Pkg sort](Pkg-sort.md)
 + 下一节: [Pkg bytes](Pkg-bytes.md)

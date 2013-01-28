@@ -246,6 +246,6 @@ func (l *List) Len() int { return l.len }
 
 links
 -----
-+ [目录](../golang)
++ [目录](../.)
 + 上一节: [Pkg ioutil](Pkg-ioutil.md)
 + 下一节: [Pkg log](Pkg-log.md)

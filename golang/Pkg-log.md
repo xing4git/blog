@@ -233,6 +233,6 @@ var std = New(os.Stderr, "", LstdFlags)
 
 links
 -----
-+ [目录](../golang)
++ [目录](../.)
 + 上一节: [Pkg list](Pkg-list.md)
 + 下一节: [Pkg sort](Pkg-sort.md)

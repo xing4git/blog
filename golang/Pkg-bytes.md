@@ -423,5 +423,5 @@ func ToLower(s []byte) []byte { return Map(unicode.ToLower, s) }
 
 links
 -----
-+ [目录](../golang)
++ [目录](../.)
 + 上一节: [Pkg expvar](Pkg-expvar.md)
