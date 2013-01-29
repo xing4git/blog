@@ -811,7 +811,7 @@ FOO ?= bar
 ifeq ($(origin FOO), undefined)
     FOO = bar
 endif
-
+```
 ### 变量高级用法
 
 这里介绍两种变量的高级使用方法，第一种是变量值的替换。
