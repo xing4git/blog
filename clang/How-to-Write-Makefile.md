@@ -957,7 +957,7 @@ override [variable] += [more text]
 对于多行的变量定义，我们用define指示符，在define指示符前，也同样可以使用ovveride指示符，如：
 ```make
 override define foo
-bar
+    bar
 endef
 ```
 
