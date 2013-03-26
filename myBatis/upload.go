@@ -21,7 +21,7 @@ var (
 var (
 	reg       = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
 	filenames = make([]string, 0)
-	dirname   = flag.String("d", "golang", "current dir name")
+	dirname   = flag.String("d", "myBatis", "current dir name")
 )
 
 func init() {
