@@ -31,13 +31,14 @@ bin/zkCli.sh -server localhost:4180
 ### 伪集群模式
 所谓伪集群, 是指在单台机器中启动多个zookeeper进程, 并组成一个集群. 以启动3个zookeeper进程为例.
 
-1. 将zookeeper的目录拷贝2份:
+将zookeeper的目录拷贝2份:
 ```
 |--zookeeper0
 |--zookeeper1
 |--zookeeper2
 ```
-2. 更改zookeeper0/conf/zoo.cfg文件为:
+
+更改zookeeper0/conf/zoo.cfg文件为:
 ```
 tickTime=2000  
 initLimit=5  
