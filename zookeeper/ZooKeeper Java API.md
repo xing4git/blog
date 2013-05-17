@@ -62,6 +62,7 @@ String create(String path, byte[] data, List acl, CreateMode createMode);
 + data. 与znode关联的数据.
 + acl. 指定权限信息, 如果不想指定权限, 可以传入Ids.OPEN_ACL_UNSAFE.
 + 指定znode类型. CreateMode是一个枚举类, 从中选择一个成员传入即可. 关于znode类型的详细说明, 可参考本人的上一篇博文.
+
 ```java
 /**
  * 创建临时节点
