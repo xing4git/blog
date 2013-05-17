@@ -60,6 +60,30 @@ server.2=127.0.0.1:8882:7772
 在之前设置的dataDir中新建myid文件, 写入一个数字, 该数字表示这是第几号server. 该数字必须和zoo.cfg文件中的server.X中的X一一对应.  
 /Users/apple/zookeeper0/data/myid文件中写入0, /Users/apple/zookeeper1/data/myid文件中写入1, /Users/apple/zookeeper2/data/myid文件中写入2.
 
+分别进入/Users/apple/zookeeper0/bin, /Users/apple/zookeeper1/bin, /Users/apple/zookeeper2/bin三个目录, 启动server.  
+任意选择一个server目录, 启动客户端:
+```bash
+bin/zkCli.sh -server localhost:4180
+```
+
+### 集群模式
+集群模式的配置和伪集群基本一致.  
+由于集群模式下, 各server部署在不同的机器上, 因此各server的conf/zoo.cfg文件可以完全一样.  
+下面是一个示例:
+```
+tickTime=2000  
+initLimit=5  
+syncLimit=2  
+dataDir=/home/zookeeper/data  
+dataLogDir=/home/zookeeper/logs  
+clientPort=4180
+server.43=10.1.39.43:2888:3888
+server.47=10.1.39.47:2888:3888  
+server.48=10.1.39.48:2888:3888
+```
+示例中部署了3台zookeeper server, 分别部署在10.1.39.43, 10.1.39.47, 10.1.39.48上.
+需要注意的是, 各server的dataDir目录下的myid文件中的数字必须不同.  
+10.1.39.43 server的myid为43, 10.1.39.47 server的myid为47, 10.1.39.48 server的myid为48.
 
 
 
