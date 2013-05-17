@@ -68,10 +68,30 @@ numChildren = 0
 znode节点的状态信息中包含czxid和mzxid, 那么什么是zxid呢?  
 ZooKeeper状态的每一次改变, 都对应着一个递增的`Transaction id`, 该id称为zxid. 由于zxid的递增性质, 如果zxid1小于zxid2, 那么zxid1肯定先于zxid2发生. 创建任意节点, 或者更新任意节点的数据, 或者删除任意节点, 都会导致Zookeeper状态发生改变, 从而导致zxid的值增加.
 
+### session
+在client和server通信之前, 首先需要建立连接, 该连接称为session. 连接建立后, 如果发生连接超时, 授权失败, 或者显式关闭连接, 连接便处于CLOSED状态, 此时session结束.
+
 ### 节点类型
 讲述节点状态的ephemeralOwner字段时, 提到过有的节点是ephemeral节点, 而有的并不是. 那么节点都具有哪些类型呢? 每种类型的节点又具有哪些特点呢?
-+ 
++ persistent. persistent节点不和特定的session绑定, 不会随着创建该节点的session的结束而消失, 而是一直存在, 除非该节点被显式删除.
++ ephemeral. ephemeral节点是临时性的, 如果创建该节点的session结束了, 该节点就会被自动删除. ephemeral节点不能用于子节点. 虽然ephemeral节点与创建它的session绑定, 但只要该该节点没有被删除, 其他session就可以读写该节点中关联的数据. 使用-e参数指定创建ephemeral节点.
 
+```
+[zk: localhost:4180(CONNECTED) 4] create -e /xing/ei world   
+Created /xing/ei
+```
++ sequence. sequence节点是ephemeral节点中的一种, 具有ephemeral所有特点. 不同的是, 创建sequence节点时, ZooKeeper server会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的sequence节点, 而得到不同的节点. 使用-s参数指定创建sequence节点.
+
+```
+[zk: localhost:4180(CONNECTED) 0] create -s /xing/item world
+Created /xing/item0000000001
+[zk: localhost:4180(CONNECTED) 1] create -s /xing/item world
+Created /xing/item0000000002
+[zk: localhost:4180(CONNECTED) 2] create -s /xing/item world
+Created /xing/item0000000003
+[zk: localhost:4180(CONNECTED) 3] create -s /xing/item world
+Created /xing/item0000000004
+```
 
 
 
