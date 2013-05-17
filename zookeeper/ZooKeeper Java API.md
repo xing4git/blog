@@ -4,20 +4,20 @@ ZooKeeper Java API
 ZooKeeper提供了Java和C的binding. 本文关注Java相关的API.
 
 ### 准备工作
-拷贝在ZooKeeper的安装目录下的zookeeper.x.x.x.jar文件到项目的classpath路径下.
+拷贝ZooKeeper安装目录下的zookeeper.x.x.x.jar文件到项目的classpath路径下.
 
 ### 创建连接和回调接口
 
 首先需要创建ZooKeeper对象, 后续的一切操作都是基于该对象进行的.
 <pre name="code" class="java">
-org.apache.zookeeper.ZooKeeper.ZooKeeper(String connectString, int sessionTimeout, Watcher watcher) throws IOException
+ZooKeeper(String connectString, int sessionTimeout, Watcher watcher) throws IOException
 </pre>
 以下为各个参数的详细说明:
 + connectString. zookeeper server列表, 以逗号隔开. ZooKeeper对象初始化后, 将从server列表中选择一个server, 并尝试与其建立连接. 如果连接建立失败, 则会从列表的剩余项中选择一个server, 并再次尝试建立连接.
 + sessionTimeout. 指定连接的超时时间. 
 + watcher. 事件回调接口.
 
-注意, 创建ZooKeeper对象时, 只要对象完成初始化便立刻返回. 建立连接是以异步的形式进行的, 当连接成功建立后, 会回调watcher的process方法. 如果想要同步建立与server直接的连接, 需要自己进一步封装.
+注意, 创建ZooKeeper对象时, 只要对象完成初始化便立刻返回. 建立连接是以异步的形式进行的, 当连接成功建立后, 会回调watcher的process方法. 如果想要同步建立与server的连接, 需要自己进一步封装.
 <pre name="code" class="java">
 public class ZKConnection {
 	/**
