@@ -51,6 +51,16 @@ dataLength = 5
 numChildren = 0
 ```
 
+删除znode
+```
+[zk: localhost:4180(CONNECTED) 13] delete /xing/item0000000001
+[zk: localhost:4180(CONNECTED) 14] delete /xing               
+Node not empty: /xing
+```
+使用delete命令可以删除指定znode. 当该znode拥有子znode时, 必须先删除其所有子znode, 否则操作将失败.
+rmr命令可用于代替delete命令, rmr是一个递归删除命令, 如果发生指定节点拥有子节点时, rmr命令会首先删除子节点.
+
+
 ### znode节点的状态信息
 使用get命令获取指定节点的数据时, 同时也将返回该节点的状态信息, 称为Stat. 其包含如下字段:
 + czxid. 节点创建时的zxid.
@@ -74,7 +84,7 @@ ZooKeeper状态的每一次改变, 都对应着一个递增的`Transaction id`, 
 ### 节点类型
 讲述节点状态的ephemeralOwner字段时, 提到过有的节点是ephemeral节点, 而有的并不是. 那么节点都具有哪些类型呢? 每种类型的节点又具有哪些特点呢?
 + persistent. persistent节点不和特定的session绑定, 不会随着创建该节点的session的结束而消失, 而是一直存在, 除非该节点被显式删除.
-+ ephemeral. ephemeral节点是临时性的, 如果创建该节点的session结束了, 该节点就会被自动删除. ephemeral节点不能用于子节点. 虽然ephemeral节点与创建它的session绑定, 但只要该该节点没有被删除, 其他session就可以读写该节点中关联的数据. 使用-e参数指定创建ephemeral节点.
++ ephemeral. ephemeral节点是临时性的, 如果创建该节点的session结束了, 该节点就会被自动删除. ephemeral节点不能拥有子节点. 虽然ephemeral节点与创建它的session绑定, 但只要该该节点没有被删除, 其他session就可以读写该节点中关联的数据. 使用-e参数指定创建ephemeral节点.
 
 ```
 [zk: localhost:4180(CONNECTED) 4] create -e /xing/ei world   
