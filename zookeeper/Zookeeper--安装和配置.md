@@ -17,7 +17,8 @@ clientPort=4180
 + tickTime: zookeeper中使用的基本时间单位, 毫秒值.  
 + dataDir: 数据目录. 可以是任意目录.  
 + dataLogDir: log目录, 同样可以是任意目录. 如果没有设置该参数, 将使用和dataDir相同的设置.  
-+ clientPort: 监听client连接的端口号.  
++ clientPort: 监听client连接的端口号.
+
 至此, zookeeper的单机模式已经配置好了. 启动server只需运行脚本:
 ```bash
 bin/zkServer.sh start
