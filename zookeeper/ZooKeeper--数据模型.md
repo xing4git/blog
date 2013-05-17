@@ -14,12 +14,21 @@ ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:
 
 ### ZooKeeper命令
 在深入znode的各个部分之前, 首先需要熟悉一些常用的ZooKeeper命令.
-- zkCli.sh 连接server
-```
-bin/zkCli.sh -server 10.1.39.43:4180
-```
+- zkCli.sh 连接server: `bin/zkCli.sh -server 10.1.39.43:4180`
 - ls: 列出指定node的子node
 ![ls](./ls.png)
+- create: 创建znode节点, 并关联数据. `create /hello world`, 创建节点/hello, 并将字符串"world"关联到该节点中.
+
+
+
+
+
+
+
+
+
+
+
 
 
 links
