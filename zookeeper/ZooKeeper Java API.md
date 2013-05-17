@@ -53,7 +53,37 @@ public class ZKConnection {
 </pre>
 
 ### 创建znode
-ZooKeeper对象的create方法用于创建znode:
+ZooKeeper对象的create方法用于创建znode.
+<pre name="code" class="java">
+String create(String path, byte[] data, List acl, CreateMode createMode);
+</pre>
+以下为各个参数的详细说明:
++ path. znode的路径.
++ data. 与znode关联的数据.
++ acl. 指定权限信息, 如果不想指定权限, 可以传入Ids.OPEN_ACL_UNSAFE.
++ 指定znode类型. CreateMode是一个枚举类, 从中选择一个成员传入即可. 关于znode类型的详细说明, 可参考本人的上一篇博文.
+<pre name="code" class="java">
+/**
+ * 创建临时节点
+ */
+public void create(String nodePath, byte[] data) throws Exception {
+	zk.create(nodePath, data, Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL);
+}
+</pre>
+
+### 获取子node列表
+ZooKeeper对象的getChildren方法用于获取子node列表.
+<pre name="code" class="java">
+List<String> getChildren(String path, boolean watch);
+</pre>
+path参数略过. watch参数用于指定是否监听path node的子node的增加和删除事件, 以及path node本身的删除事件.
+
+### 判断znode是否存在
+ZooKeeper对象的exists方法用于判断指定znode是否存在.
+<pre name="code" class="java">
+Stat exists(String path, boolean watch);
+</pre>
+path参数略过. watch参数用于指定是否监听path node的增加, 删除事件, 以及数据更新事件. 如果该node存在, 则返回该node的状态信息, 否则返回null.
 
 
 
