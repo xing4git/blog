@@ -76,19 +76,46 @@ ZooKeeper对象的getChildren方法用于获取子node列表.
 <pre name="code" class="java">
 List<String> getChildren(String path, boolean watch);
 </pre>
-path参数略过. watch参数用于指定是否监听path node的子node的增加和删除事件, 以及path node本身的删除事件.
+watch参数用于指定是否监听path node的子node的增加和删除事件, 以及path node本身的删除事件.
 
 ### 判断znode是否存在
 ZooKeeper对象的exists方法用于判断指定znode是否存在.
 <pre name="code" class="java">
 Stat exists(String path, boolean watch);
 </pre>
-path参数略过. watch参数用于指定是否监听path node的增加, 删除事件, 以及数据更新事件. 如果该node存在, 则返回该node的状态信息, 否则返回null.
+watch参数用于指定是否监听path node的创建, 删除事件, 以及数据更新事件. 如果该node存在, 则返回该node的状态信息, 否则返回null.
 
+### 获取node中关联的数据
+ZooKeeper对象的getData方法用于获取node关联的数据.
+<pre name="code" class="java">
+byte[] getData(String path, boolean watch, Stat stat);
+</pre>
+watch参数用于指定是否监听path node的删除事件, 以及数据更新事件, 注意, 不监听path node的创建事件, 因为如果path node不存在, 该方法将抛出KeeperException.NoNodeException异常.  
+stat参数是个传出参数, getData方法会将path node的状态信息设置到该参数中.  
 
+### 更新node中关联的数据
+ZooKeeper对象的setData方法用于更新node关联的数据.
+<pre name="code" class="java">
+Stat setData(final String path, byte data[], int version);
+</pre>
+data为待更新的数据.  
+version参数指定要更新的数据的版本, 如果version和真实的版本不同, 更新操作将失败. 指定version为-1则忽略版本检查.  
+返回path node的状态信息.  
 
+### 删除znode
+ZooKeeper对象的delete方法用于删除znode.
+<pre name="code" class="java">
+void delete(final String path, int version);
+</pre>
+version参数的作用同setData方法.
 
+### 其余接口
+请查看ZooKeeper对象的API文档.
 
+### 需要注意的几个地方
++ znode中关联的数据不能超过1M. zookeeper的使命是分布式协作, 而不是数据存储.
++ getChildren, getData, exists方法可指定是否监听相应的事件. 而create, delete, setData方法则会触发相应的事件的发生.
++ 以上介绍的几个方法大多存在其异步的重载方法, 具体请查看API说明.
 
 
 
