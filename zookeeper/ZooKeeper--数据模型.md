@@ -2,6 +2,7 @@ ZooKeeper  数据模型
 ----
 
 ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:
+
 ![ZooKeeper数据结构](./model.jpg)
 
 

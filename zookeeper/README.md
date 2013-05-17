@@ -3,7 +3,7 @@ Index
 
 ####ZooKeeper  数据模型
 *2013-05-17*
-ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:![ZooKeeper数据结构](./model.jpg)...[Read More](zookeeper/ZooKeeper--数据模型.md)
+ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:...[Read More](zookeeper/ZooKeeper--数据模型.md)
 
 ####Zookeeper  安装和配置
 *2013-05-17*
