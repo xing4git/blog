@@ -18,6 +18,8 @@ ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:
 - ls: 列出指定node的子node
 ![ls](./ls.png)
 - create: 创建znode节点, 并关联数据. `create /hello world`, 创建节点/hello, 并将字符串"world"关联到该节点中.
+- get: 获取znode的数据和状态信息.
+![get](./get.png)
 
 
 
