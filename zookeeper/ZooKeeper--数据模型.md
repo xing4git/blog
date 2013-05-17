@@ -103,6 +103,47 @@ Created /xing/item0000000003
 Created /xing/item0000000004
 ```
 
+### watch
+watch的意思是监听感兴趣的事件. 在命令行中, 以下几个命令可以指定是否监听相应的事件:
+ls命令. ls命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的子节点的增减, 以及该znode本身的删除事件.
+
+```
+[zk: localhost:4180(CONNECTED) 21] ls /xing true
+[]
+[zk: localhost:4180(CONNECTED) 22] create /xing/item item000
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:NodeChildrenChanged path:/xing
+Created /xing/item
+```
+
+get命令. get命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的更新和删除事件.
+
+```
+[zk: localhost:4180(CONNECTED) 39] get /xing true
+world
+cZxid = 0x100000066
+ctime = Fri May 17 22:30:01 CST 2013
+mZxid = 0x100000066
+mtime = Fri May 17 22:30:01 CST 2013
+pZxid = 0x100000066
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 5
+numChildren = 0
+[zk: localhost:4180(CONNECTED) 40] create /xing/item item000
+Created /xing/item
+[zk: localhost:4180(CONNECTED) 41] rmr /xing
+
+WATCHER::
+
+WatchedEvent state:SyncConnected type:NodeDeleted path:/xing
+```
+
+stat命令. stat命令用于获取znode的状态信息. 第一个参数指定znode, 如果第二个参数为true, 则监听该node的更新和删除事件.
 
 
 
