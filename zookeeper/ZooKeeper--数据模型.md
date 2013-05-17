@@ -20,20 +20,21 @@ ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:
 ![ls](./ls.png)
 - create: 创建znode节点, 并关联数据. `create /hello world`, 创建节点/hello, 并将字符串"world"关联到该节点中.
 - get: 获取znode的数据和状态信息.
-
-> [zk: 10.1.39.43:4180(CONNECTED) 7] get /hello
-> world
-> cZxid = 0x10000042c
-> ctime = Fri May 17 17:57:33 CST 2013
-> mZxid = 0x10000042c
-> mtime = Fri May 17 17:57:33 CST 2013
-> pZxid = 0x10000042c
-> cversion = 0
-> dataVersion = 0
-> aclVersion = 0
-> ephemeralOwner = 0x0
-> dataLength = 5
-> numChildren = 0
+```
+[zk: 10.1.39.43:4180(CONNECTED) 7] get /hello
+world
+cZxid = 0x10000042c
+ctime = Fri May 17 17:57:33 CST 2013
+mZxid = 0x10000042c
+mtime = Fri May 17 17:57:33 CST 2013
+pZxid = 0x10000042c
+cversion = 0
+dataVersion = 0
+aclVersion = 0
+ephemeralOwner = 0x0
+dataLength = 5
+numChildren = 0
+```
 
 
 
