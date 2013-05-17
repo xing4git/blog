@@ -7,12 +7,13 @@ Zookeeper的安装和配置十分简单, 既可以配置成单机模式, 也可�
 ### 单机模式
 [点击这里](http://zookeeper.apache.org/releases.html)下载zookeeper的安装包之后, 解压到合适目录.
 进入zookeeper目录下的conf子目录, 创建zoo.cfg:
-```
+<pre class="properties" name="code">
 tickTime=2000  
 dataDir=/Users/apple/zookeeper/data  
 dataLogDir=/Users/apple/zookeeper/logs  
-clientPort=4180  
-```
+clientPort=4180
+</pre>
+
 参数说明:
 + tickTime: zookeeper中使用的基本时间单位, 毫秒值.  
 + dataDir: 数据目录. 可以是任意目录.  
@@ -84,14 +85,6 @@ server.48=10.1.39.48:2888:3888
 示例中部署了3台zookeeper server, 分别部署在10.1.39.43, 10.1.39.47, 10.1.39.48上.
 需要注意的是, 各server的dataDir目录下的myid文件中的数字必须不同.  
 10.1.39.43 server的myid为43, 10.1.39.47 server的myid为47, 10.1.39.48 server的myid为48.
-
-
-
-
-
-
-
-
 
 
 links
