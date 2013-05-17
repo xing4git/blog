@@ -89,7 +89,7 @@ ZooKeeper状态的每一次改变, 都对应着一个递增的`Transaction id`, 
 [zk: localhost:4180(CONNECTED) 4] create -e /xing/ei world   
 Created /xing/ei
 ```
-`sequence`. sequence节点是ephemeral节点中的一种, 具有ephemeral所有特点. 不同的是, 创建sequence节点时, ZooKeeper server会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的sequence节点, 而得到不同的节点. 使用-s参数指定创建sequence节点.
+`sequence`. 严格的说, sequence并非节点类型中的一种. sequence节点既可以是ephemeral的, 也可以是persistent的. 创建sequence节点时, ZooKeeper server会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的sequence节点, 而得到不同的节点. 使用-s参数指定创建sequence节点.
 ```
 [zk: localhost:4180(CONNECTED) 0] create -s /xing/item world
 Created /xing/item0000000001

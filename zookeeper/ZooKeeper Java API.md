@@ -52,6 +52,10 @@ public class ZKConnection {
 }
 </pre>
 
+### 创建znode
+ZooKeeper对象的create方法用于创建znode:
+
+
 
 
 
