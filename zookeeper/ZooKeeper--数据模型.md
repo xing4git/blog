@@ -83,15 +83,13 @@ ZooKeeper状态的每一次改变, 都对应着一个递增的`Transaction id`, 
 
 ### 节点类型
 讲述节点状态的ephemeralOwner字段时, 提到过有的节点是ephemeral节点, 而有的并不是. 那么节点都具有哪些类型呢? 每种类型的节点又具有哪些特点呢?
-+ persistent. persistent节点不和特定的session绑定, 不会随着创建该节点的session的结束而消失, 而是一直存在, 除非该节点被显式删除.
-+ ephemeral. ephemeral节点是临时性的, 如果创建该节点的session结束了, 该节点就会被自动删除. ephemeral节点不能拥有子节点. 虽然ephemeral节点与创建它的session绑定, 但只要该该节点没有被删除, 其他session就可以读写该节点中关联的数据. 使用-e参数指定创建ephemeral节点.
-
+`persistent`. persistent节点不和特定的session绑定, 不会随着创建该节点的session的结束而消失, 而是一直存在, 除非该节点被显式删除.
+`ephemeral`. ephemeral节点是临时性的, 如果创建该节点的session结束了, 该节点就会被自动删除. ephemeral节点不能拥有子节点. 虽然ephemeral节点与创建它的session绑定, 但只要该该节点没有被删除, 其他session就可以读写该节点中关联的数据. 使用-e参数指定创建ephemeral节点.
 ```
 [zk: localhost:4180(CONNECTED) 4] create -e /xing/ei world   
 Created /xing/ei
 ```
-+ sequence. sequence节点是ephemeral节点中的一种, 具有ephemeral所有特点. 不同的是, 创建sequence节点时, ZooKeeper server会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的sequence节点, 而得到不同的节点. 使用-s参数指定创建sequence节点.
-
+`sequence`. sequence节点是ephemeral节点中的一种, 具有ephemeral所有特点. 不同的是, 创建sequence节点时, ZooKeeper server会在指定的节点名称后加上一个数字序列, 该数字序列是递增的. 因此可以多次创建相同的sequence节点, 而得到不同的节点. 使用-s参数指定创建sequence节点.
 ```
 [zk: localhost:4180(CONNECTED) 0] create -s /xing/item world
 Created /xing/item0000000001
@@ -106,7 +104,6 @@ Created /xing/item0000000004
 ### watch
 watch的意思是监听感兴趣的事件. 在命令行中, 以下几个命令可以指定是否监听相应的事件:
 ls命令. ls命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的子节点的增减, 以及该znode本身的删除事件.
-
 ```
 [zk: localhost:4180(CONNECTED) 21] ls /xing true
 []
@@ -119,7 +116,6 @@ Created /xing/item
 ```
 
 get命令. get命令的第一个参数指定znode, 第二个参数如果为true, 则说明监听该znode的更新和删除事件.
-
 ```
 [zk: localhost:4180(CONNECTED) 39] get /xing true
 world
@@ -144,17 +140,6 @@ WatchedEvent state:SyncConnected type:NodeDeleted path:/xing
 ```
 
 stat命令. stat命令用于获取znode的状态信息. 第一个参数指定znode, 如果第二个参数为true, 则监听该node的更新和删除事件.
-
-
-
-
-
-
-
-
-
-
-
 
 
 links
