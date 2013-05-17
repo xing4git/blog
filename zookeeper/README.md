@@ -1,7 +1,11 @@
 Index
 -----
 
+####ZooKeeper  数据模型
+*2013-05-17*
+ZooKeeper的数据结构, 与普通的文件系统极为类似. 见下图:![ZooKeeper数据结构](./model.jpg)...[Read More](zookeeper/ZooKeeper--数据模型.md)
+
 ####Zookeeper  安装和配置
 *2013-05-17*
-Zookeeper的安装和配置十分简单, 既可以配置成单机模式, 也可以配置成集群模式.下面将分别进行介绍....[Read More](golang/Zookeeper--安装和配置.md)
+Zookeeper的安装和配置十分简单, 既可以配置成单机模式, 也可以配置成集群模式.下面将分别进行介绍....[Read More](zookeeper/Zookeeper--安装和配置.md)
 

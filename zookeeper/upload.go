@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"os"
 	"regexp"
+	"runtime/debug"
 	"sort"
 )
 
@@ -21,7 +22,7 @@ var (
 var (
 	reg       = regexp.MustCompile("^_\\d{4}-\\d{2}-\\d{2}-")
 	filenames = make([]string, 0)
-	dirname   = flag.String("d", "golang", "current dir name")
+	dirname   = flag.String("d", "zookeeper", "current dir name")
 )
 
 func init() {
@@ -138,6 +139,7 @@ func decorateFilename(str string) string {
 func checkErr(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error: %s\n", err.Error())
+		debug.PrintStack()
 		os.Exit(1)
 	}
 }
