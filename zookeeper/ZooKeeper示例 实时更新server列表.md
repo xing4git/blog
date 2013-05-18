@@ -14,7 +14,7 @@ ZooKeeper示例 实时更新server列表
 
 ### 实现AppServer
 AppServer的逻辑非常简单, 只须在启动时, 在zookeeper的"/sgroup"节点下新增一个子节点即可.
-```java
+```
 public class AppServer {
 	private String groupNode = "sgroup";
 	private String subNode = "sub";
@@ -64,7 +64,7 @@ public class AppServer {
 ### 实现AppClient
 AppClient的逻辑比AppServer稍微复杂一些, 需要监听"/sgroup"下子节点的变化事件, 当事件发生时, 需要更新server列表.  
 注册监听"/sgroup"下子节点的变化事件, 可在getChildren方法中完成. 当zookeeper回调监听器的process方法时, 判断该事件是否是"/sgroup"下子节点的变化事件, 如果是, 则调用更新逻辑, 并再次注册该事件的监听.
-```java
+```
 public class AppClient {
 	private String groupNode = "sgroup";
 	private ZooKeeper zk;
@@ -138,7 +138,7 @@ public class AppClient {
 开启多个命令行窗口, 每个窗口运行appserver.jar进程: `java -jar appserver.jar server0000`. "server0000"表示server的地址, 别忘了给每个server设定一个不同的地址. 观察appclient的输出.  
 依次结束appserver的进程, 观察appclient的输出.  
 appclient的输出类似于:
-```bash
+```
 server list updated: []
 server list updated: [server0000]
 server list updated: [server0000, server0001]
