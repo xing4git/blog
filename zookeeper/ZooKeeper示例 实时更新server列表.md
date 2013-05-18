@@ -152,4 +152,4 @@ server list updated: []
 links
 -----
 + [目录](../zookeeper)
-+ 上一节: [ZooKeeper示例 实时更新server列表](ZooKeeper示例 实时更新server列表)
++ 上一节: [ZooKeeper Java API](ZooKeeper Java API.md)
