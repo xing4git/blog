@@ -31,8 +31,8 @@ public class AppServer {
 		});
 		// 在"/sgroup"下创建子节点, 子节点的类型设置为EPHEMERAL_SEQUENTIAL, 表明这是一个临时节点, 且在子节点的名称后面加上一串数字后缀
 		// 将server的地址数据关联到新创建的子节点上
-		String createdPath = zk.create("/" + groupNode + "/" + subNode, address.getBytes("utf-8"), Ids.OPEN_ACL_UNSAFE,
-				CreateMode.EPHEMERAL_SEQUENTIAL);
+		String createdPath = zk.create("/" + groupNode + "/" + subNode, address.getBytes("utf-8"), 
+			Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
 		System.out.println("create: " + createdPath);
 	}
 	
@@ -77,7 +77,8 @@ public class AppClient {
 		zk = new ZooKeeper("localhost:4180,localhost:4181,localhost:4182", 5000, new Watcher() {
 			public void process(WatchedEvent event) {
 				// 如果发生了"/sgroup"节点下的子节点变化事件, 更新server列表, 并重新注册监听
-				if (event.getType() == EventType.NodeChildrenChanged && ("/" + groupNode).equals(event.getPath())) {
+				if (event.getType() == EventType.NodeChildrenChanged 
+					&& ("/" + groupNode).equals(event.getPath())) {
 					try {
 						updateServerList();
 					} catch (Exception e) {
