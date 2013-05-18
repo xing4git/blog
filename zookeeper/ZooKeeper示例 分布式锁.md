@@ -75,7 +75,7 @@ public class DistributedClient {
 			if (index == -1) {
 				// never happened
 			} else if (index == 0) {
-				// inddx == 0, 说明thisNode在列表中最小, 当前client获得锁
+				// index == 0, 说明thisNode在列表中最小, 当前client获得锁
 				doSomething();
 			} else {
 				// 获得排名比thisPath前1位的节点
@@ -86,6 +86,9 @@ public class DistributedClient {
 		}
 	}
 
+	/**
+	 * 共享资源的访问逻辑写在这个方法中
+	 */
 	private void doSomething() throws Exception {
 		try {
 			System.out.println("gain lock: " + thisPath);
@@ -117,6 +120,10 @@ public class DistributedClient {
 	}
 }
 ```
+
+### 运行
+在zookeeper中创建"/locks"节点, 如果已存在, 就删除后重新创建.  
+运行main方法, 观察输出结果.
 
 
 links
