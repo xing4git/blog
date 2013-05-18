@@ -29,7 +29,8 @@ public class AppServer {
 				// 不做处理
 			}
 		});
-		// 在"/sgroup"下创建子节点, 子节点的类型设置为EPHEMERAL_SEQUENTIAL, 表明这是一个临时节点, 且在子节点的名称后面加上一串数字后缀
+		// 在"/sgroup"下创建子节点
+		// 子节点的类型设置为EPHEMERAL_SEQUENTIAL, 表明这是一个临时节点, 且在子节点的名称后面加上一串数字后缀
 		// 将server的地址数据关联到新创建的子节点上
 		String createdPath = zk.create("/" + groupNode + "/" + subNode, address.getBytes("utf-8"), 
 			Ids.OPEN_ACL_UNSAFE, CreateMode.EPHEMERAL_SEQUENTIAL);
