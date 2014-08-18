@@ -1,3 +1,116 @@
+In Groovy, if you leave off the parentheses when calling a method with no arguments the compiler assumes you are asking for the corresponding getter or setter method.
+
+-----
+In Groovy every class has a metaclass. A metaclass is another class that manages the actual invocation process. If you invoke a method on a class that doesnot exist, the call is ultimately intercepted by a method in the metaclass called `methodMissing`. Likewise, accessing a property that doesnot exist eventually calls `propertyMissing` in the metaclass. Customizing the behavior of `methodMissing` and `propertyMissing` is the heart of Groovy runtime metaprogramming.
+
+----
+In Groovy, if you donot specify an access modifier, attributes are assumed to be private, and methods are assumed to be public.
+
+In Java, if you donot add a constructor in a class, the compiler gives you a default constructor for free. In Groovy, however, you get not only the default, but also a map-based constructor that allows you to set any combination of attribute values by supplying them as key-value pairs.
+
+```
+class Stadium {
+	int id
+	String name
+	String city
+	String state
+
+	String toString() { "$name, $city, $state" }
+}
+
+def s = new Stadium(name: 'Angel Stadium', city:'Anaheim', state:'CA')
+```
+
+In addition, you can use `as` operator:
+
+```
+def s = [name: 'Angel Stadium', city:'Anaheim', state:'CA'] as Stadium
+```
+
+----
+At runtime, compiled Groovy and compiled Java both result in bytecodes for the JVM. To execute code that combines them, all that is necessary is to add a single JAR file to the system. Compilimng and tesing your code requires the Groovy compiler and libraries, but at runtime all you need is your JAR.
+
+That JAR comes with your Groovy distribution in the `embeddable` subdirectory. If this JAR is added to your classpath you can execute combined Groovy and Java application with the standard `java` command. If you add a Groovy module to a web application, add the groovy-all JAR to the WEB-INFO/lib directory and everything will work normally.
+
+----
+The natural tendency when using two different languages is to separate the two codebases and compile them independently. With Groovy and Java that can lead to all sorts of problems, especially when cyclic dependencies are involved. The simplest way to compile Groovy and Java in the same project is to let the `groovyc` compiler handle both codebases. Groovy knows all about Java and is quite capable of handling it. Any compiler flags you would normally send to `javac` work just fine in `groovyc` as well.
+
+----
+Groovy 1.6 introduced Abstract Syntax Tree (AST) transformations. The idea is to place annotations on Groovy classes and invoke the compiler, which builds a syntax as usual and then modifies it in interesting ways.
+
+* @Delegate
+
+With delegation you wrap an instance of one class inside another. You then implement all the same methods in the outer class that the contained class provides, delegating each call to the corresponding method on the contained object. In this way your class has the same interface as the contained object but is not otherwise related to it. Writing all those "pass-through" methods can be a pain, though. Groovy introduce the @Delegate annotation to take care of all that work for you.
+
+```
+class Camera {
+    void takePicture() {
+        println("take picture")
+    }
+}
+
+class Phone {
+    void dial(String number) {
+        println("dialing $number")
+    }
+}
+
+class SmartPhone {
+    @Delegate Camera camera
+    @Delegate Phone phone
+}
+
+def sp = new SmartPhone(camera: new Camera(), phone: new Phone())
+sp.takePicture()
+sp.dial("13245678908")
+```
+
+* Creating immutable objects
+
+Java has no built-in way to make it impossible to modify an object. There is no `const` keyword in Java, and applying the combination of `static` and `final` to a reference only makes the reference a constant, not the object it references. The only way to make an object immutable in Java is to remove all ways to change it:
+
+1. All mutable methods (setters) must be removed.
+2. The class should be marked `final`.
+3. Any contained fields should be `private` and `final`.
+4. Mutable components like arrays should defensively be copied on the way in (through constructors) and the way out (through getters).
+5. `equals`, `hasCode`, and `toString` should all be implemented through fields.
+
+Groovy has an @Immutable AST transformation, which does everything for you. The @Immutable annotation is very powerful, but it has limitations. You can only apply it to classes that contain primitives or certain library classes, like `String` or `Date`. It also works on classes that contain properties that are also immutable. 
+
+* Creating singletons
+
+There is an AST transformation called @Singleton. 
+
+```
+@Singleton
+class HelloService {
+    void sayHi() {
+        println("hi")
+    }
+}
+
+HelloService.instance.sayHi()
+```
+
+The result is that the class now contains a static property called `instance`, which is the one and only instance of the class.
+
+----
+The `parseText` method on `JsonSlurper` converts the JSON data into Groovy maps and lists.
+
+```
+String u = 'http://api.icndb.com/jokes/random?limitTo=[nerdy]'
+def text = u.toURL().text
+def json = new JsonSlurper().parseText(text)
+def joke = json?.value?.joke
+println joke
+```
+
+Generating JSON data uses the groovy.json.JsonBuilder class.
+
+
+
+
+
 ### switch statement
 
 Switch supports the following kinds of comparisions:
@@ -96,6 +209,8 @@ a<b | a.compareTo(b)<0
 a<=b | a.compareTo(b)<=0
 
 ** Note: the == operator doesnot always exactly match the .equals method.
+
+You can implement the correct method in a Java class, and if an instance of that class is used in Groovy code, the operator will work there as well.
 
 ### spread operator(*.)
 
