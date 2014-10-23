@@ -139,3 +139,9 @@ In Scala, `public` is the default access level.
 
 Method parameters in Scala are vals, not vars.
 
+---
+Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
+
+---
+
+
