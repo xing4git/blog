@@ -139,6 +139,7 @@ In Scala, `public` is the default access level.
 
 Method parameters in Scala are vals, not vars.
 
+<<<<<<< HEAD
 The Scala compiler treats a function defined in the procedure style, with curly braces but no equals sign, essentially the same as a function that explicitly declares its result type to be Unit:
 
 	def g() { "this string gets lost" }
@@ -152,3 +153,11 @@ If you intend to return a non-Unit value without explicitly declare result type,
 The function `h` returns String.
 
 -----
+=======
+---
+Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
+
+---
+
+
+>>>>>>> beae17fb4f757ea2c0b226a65276a256947b81ca
