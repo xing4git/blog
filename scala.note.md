@@ -139,6 +139,18 @@ In Scala, `public` is the default access level.
 
 Method parameters in Scala are vals, not vars.
 
+The Scala compiler treats a function defined in the procedure style, with curly braces but no equals sign, essentially the same as a function that explicitly declares its result type to be Unit:
+
+	def g() { "this string gets lost" }
+
+The function `g` returns Unit. This is true no matter what the body contains, because the Scala compiler can convert any type to Unit. For example, if the last result of a method is a String, but the method result type is declared to be Unit, the String will be converted to Unit and its value lost.
+
+If you intend to return a non-Unit value without explicitly declare result type, you need to insert the equals sign before the function body:
+
+	def h() = {"this String gets returned" }
+	
+The function `h` returns String.
+
 ---
 Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
 
