@@ -151,6 +151,7 @@ If you intend to return a non-Unit value without explicitly declare result type,
 	
 The function `h` returns String.
 
+<<<<<<< HEAD
 -----
 Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
 
@@ -251,5 +252,423 @@ Most operators are infix operators, which mean the method to invoke sits between
 As with the infix operators, prefix operators are a shorthand way of invoking methods. In this case, however, the name of the method has "unary_" prepended to the operator character. For instance, Scala will transform the expression `-2.0` into the method invocation `(2.0).unary_-`. 
 
 Postfix operators are methods that take no arguments, when they are invoked without a dot or parentheses. In Scala, you can leave off empty parentheses on method calls. The convention is that you include parentheses if the method has side effects, such as println(), but you can leave them off if the method has no side effects, such as toLowerCase invoked on a String. In this case of method that requires no arguments, you can alternatively leave off the dot and use postfix operator notation.
+=======
+---
+Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
+
+---
+If you want to compare two objects for equality, you can use either ==, or !=. == has been carefully crafted so that you get just the equality comparison you want in most cases. First check the left side for null, and if it is not null, call the equals method. Since equals is a method, the precise comparison you get depends on the type of the left-hand argument. Since there is an automatic null check, you donot have to do the check yourself. The automatic does not look at the right-hand side, but any reasonable equals method should return false if its argument is null.
+>>>>>>> fa004fdc3394401077c95432c15e7df8a3cab039
+
+In Java, you can use == to compare both primitive and reference types. On primitive types, Java's == compares value equality, as in Scala. On reference types, however, Java's == compares reference equality, which means the two variables point to the same object on the JVM's heap. Scala provides a facility for comparing reference equality, as well, under the name `eq`, or `ne`.
+
+<<<<<<< HEAD
+=======
+---
+You can invoke many methods on Scala's basic types, these methods are available via implicit conversions. For each basic type, there is also a rich wrapper that provides several additional methods.
+
+---
+Implicit conversions
+
+```
+class Rational(n: Int, d: Int) {
+    require(d!=0)
+    private val g = gcd(n.abs, d.abs)
+    val number = n/g
+    val denom = d/g
+
+    def this(n:Int) = this(n, 1)
+
+    def +(that:Rational):Rational = new Rational(number*that.denom + that.number*denom, denom*that.denom)
+    
+    def +(i:Int):Rational = new Rational(number+denom*i, denom)
+}
+```
+
+For the Rational object r, you can write r+2, but you cannot write 2+r. Because there is not an add method accepts an Rational object on the Int 2.
+
+There is a way to solve this problem in Scala: You can create an implicit conversion that automatically converts integers to rational numbers when needed:
+
+```
+implicit def intToRational(x: Int) = new Rational(x)
+```
+
+The implicit modifier in front of the method tells the compiler to apply it automatically in a number of situations. With the conversion defined, you can now write 2+r.
+
+Implicit conversions are a very powerful technique for making libraries more fleible and more convenient to use. But they can also be easily misused.
+
+---
+Almost all of Scala's control structures result in some value. Programmers can use these result value to simplify their code, just as they use return values of functions.
+
+```
+val filename = if(!args.isEmpty) args(0) else "default.txt"
+```
+
+This code is slightly shorter, but its real advantage is that it uses a val instead of a var. Using a val is the functional style, and it helps you in much the same way as a final variable in Java.
+
+The while and do-while constructs are called "loops", not expressions, because they donot result in an interesting value. The type of the result is Unit.
+
+One other construct that results in the unit value, is reassignment to vars.
+
+```
+var line = ""
+while((line=readLine())!="") {
+	//
+}
+```
+
+The code above doesnot work in Scala. Whereas in Java, assignment results in the value assigned, but in Scala assignment always results in the unit value.
+
+---
+For expression
+
+The simplest thing you can do with for is to iterate through all the elements of a collection.
+
+```
+val files = (new java.io.File("/Users")).listFiles
+for(file <- files) println(file)
+```
+
+Sometimes you want to filter a collection down to some subset. You can do this with a for expression by adding a filter: an if clause inside the for's parentheses.
+
+```
+for(file <- files if file.getName.endsWith(".scala")) println(file)
+```
+
+You can include more filters if you want, just keep adding if clauses.
+
+You use for to iterate values and then forgotten them so far, you can also generate a value to remember for each iteration. To do so, you prefix the body of the for expression by the keyword yield.
+
+```
+def hiddens = for{
+    file <- files if file.getName.contains(".")
+} yield file
+```
+
+When the for expression completes, the result will include all the yielded values contained in a single collection. The type of the resulting collection is based on the kind of collections processed in the iteration clauses. The syntax of a for-yield expression is like this: `for clauses yield body`. The yield goes before the entire body. Even if the body is a block surrounded by curly braces, put the yield before the first curly brace, not before the last expression of the block.
+
+---
+try-catch-finally
+
+In Scala, try-catch-finally results in a value. The result is that of the try clause if no exception is thrown, or the relevant catch clause if an exception is thrown and caught. If an exception is thrown but not caught, the expression has no value at all. The value computed in the finally clause, if there is one, is dropped. Usually finally clauses do some kind of clean up such as closing a file; they should not normally change the value computed in the main body or a catch clause fo the try.
+
+```
+def urlFor(path: String) = 
+	try {
+		new URL(path)
+	} catch {
+		case e: MalformedURLException => new URL("http://www.scala-lang.org")
+	}
+```
+
+---
+match expression
+
+Scala's match expression lets you select from a number of alternatives, just like switch statements in other languages.
+
+```
+val firstArg = if(args.length>0) args(0) else ""
+
+firstArg match {
+	case "salt" => println("papper")
+	case "chips" => println("salsa")
+	case _ => println("huh?")
+}
+```
+
+There are a few important differences from Java's switch statement. One is that any kind of constant, as well as other things, can be used in cases in Scala, not just the integer-type and enum constants of Java's case statements. Another difference is that there are no breaks at the end of the each alternative. Instead the break is implicit, and there is no fall through from one alternative to the next.
+
+The match expressions also result in a value.
+
+```
+val firstArg = if (!args.isEmpty) args(0) else ""
+val friend =
+	firstArg match {
+		case "salt" => "pepper"
+		case "chips" => "salsa"
+		case "eggs" => "bacon"
+		case _ => "huh?"
+	}
+```
+
+---
+A funciton literal is compiled into a class that when instantiated at runtime is a function value. Thus the distinction between function literals and values is that function literals exist in the source code, whereas funciton values exist as object at runtime.
+
+```
+(x: Int) => x+1
+```
+
+The => designates that this function converts the thing on the left to the thing on the right. So, this is a function mapping any integer x to x+1.
+
+Function values are objects, so you can store them in variables if you like. They are functions too, so you can invoke them using the usual parentheses function-call notation:
+
+```
+var increase = (x: Int) => x+1
+increase(10) // 11
+increase = (x: Int) => {
+	x+999
+}
+increase(1) // 1000
+```
+
+Scala provides a number of ways to leave out redundant information and write function literals more briefly. One way to make a function literal more brief is to leave off the parameter types.
+
+```
+val someNums = List(-11, -10, -5, 0, 5, 10)
+someNums.filter((x) => x>0) // List(5, 10)
+```
+
+In the previous example, the parentheses around x are unnecessary:
+
+```
+someNums.filter(x => x>0)
+```
+
+To make a function literal even more concise, you can use underscores as placeholders for one or more parameters, so long as each parameter appears only one time with the function literal.
+
+```
+someNums.filter(_>0)
+```
+
+You can think of the underscores as a "blank" in the expression that needs to be "filled in". This blank will be filled in with an argument to the function each time the function is invoked.
+
+---
+Partially applied functions
+
+Scala treats `someNums.foreach(println _)` as if `someNums.foreach(x=>println(x)`. Thus the underscore in this case is not a placeholder for a single parameter. It is a placeholder for an entire parameter list. Remember that you need to leave a space between the function name and the underscore. When you use an underscore in this way, you are writing a partially applied functions. In Scala, when you invoke a function, passing in any needed arguments, you apply that function to the arguments.
+
+```
+def sum(a:Int, b:Int, c:Int) = a+b+c
+sum(1, 2, 3) // apply the function sum to 1, 2, 3 arguments
+```
+
+A partially applied function is an expression in which you donot supply all of the arguments needed by the function. Instead, you supply some, or none, of the needed arguments. 
+
+```
+val a = sum _
+a(1, 2, 3) // 6
+```
+
+Here is what just happened: The variable named a refers to a function value object. This function value is an instance of a class generated automatically by the Scala compiler from `sum _`, the partially applied function expression. The class generated by the compiler has an apply method that takes three arguments. The generated class's apply method takes 3 parameters because 3 is the number of arguments missing in the `sum _` expression. The Scala compiler translates the expression `a(1,2,3)` into an invocation of the function value's apply method, passing in the three arguments 1,2,3. Thus `a(1,2,3)` is a short form for: `a.apply(1,2,3)`.
+
+This apply method, defined in the class generated automatically by the compiler from expression `sum _`, simply forwards those thress missing parameters to `sum`, and returns the result. 
+
+You can also express a partially applied function by supplying some but not all of the required arguments.
+
+```
+val b = sum(1, _:Int, 3)
+b(5) // 9
+```
+
+In this case, the middle argument is missing. Since only one parament is missing, the Scala compiler generates a new function class whose apply method takes one argument.
+
+If you are writing a partially applied function expression in which you leave off all parameters, such as `println _`, or `sum _`, you can express it more concisely by leaving off the underscore if a function is required at that point in the code: `someNums.foreach(println)`. In situations where a funciton is not required, attempting to use this form will cause a compilation error.
+
+---
+Special function call forms
+
+Scala allows you to indicate that the last parameter to a function may be repeated. This allows clients to pass variable length argument lists to the function. To denote a repeated parameter, place an asterisk after the type of the parameter.
+
+```
+def echo(args: String*) = for(arg<-args) println(arg)
+```
+
+Inside the function, the type of the repeated parameter is an Array of the declared type of the parameter. Nevertheless, if you have an array of the appropriate type, and you attempt to pass it as a repeated parameter, you will get a compiler error:
+
+```
+val arr = Array("1", "2")
+echo(arr) //ERROR
+```
+
+To accomplish this, you will need to append the array argument with a colon and an _* symbol: `echo(arr: _*)`. This notation tells the compiler to pass each element of array as its own argument to echo, rather than all of it as a single argument.
+
+Named arguments allow you to pass arguments to a function in a different order.
+
+```
+def speed(distance: Float, time: Float): Float = distance/time
+speed(time=10, distance=100)
+```
+
+It is also possible to mix positional and named arguments. In that case, the positional arguments come first. Named arguments are most frequentlu used in combination with default paramter values.
+
+Scala lets you specify default values for function parameters. The argument for such a parameter can optionally be omitted from a function call, in which case the corresponding argument will be filled in with the default.
+
+```
+def printTime(out: java.io.PrintStream = Console.out, divisor: Int = 1) = out.println("time = "+ System.currentTimeMillis()/divisor)
+printTime(out=Console.err)
+printTime(divisor=1000)
+```
+
+---
+Tail recursion
+
+```
+def approximate(guess: Double): Double = 
+	if(isGoodEnough(guess)) guess
+	else approximate(improve(guess))
+```
+
+Note that the recursive call is the last thing that happens in the evaluation of function approximate's body. Functions like approximate, which call themselves as their last action, are called tail recursive. The Scala compiler detects tail recursion and replaces it with a jump back to the beginning of the funciton, after updating the function parameters with the new values.
+
+A tail-recursive function will not build a new stack frame for each call; all calls will execute in a single frame. The use of tail recursive in Scala is fairly limited. Scala only optimizes directly recursive calls back to the same function making the call. If the recursion is indirect, no optimization is possible.
+
+---
+Curring function
+
+A curried function is applied to multiple argument lists, instead of just one.
+
+```
+def curriedSum(x:Int)(y:Int) = x+y
+curriedSum(1)(2) // 3
+```
+
+The first invocation takes a single Int parameter named x, and returns a function value for the second function. This second function takes the Int parameter y.
+
+```
+val onePlus = curriedSum(1)_
+onePlus(2) // 3
+```
+
+---
+In any Scala method invocation in which you are passing in exactly one argument, you can opt to use curly braces to surround the argument instead of parentheses.
+
+```
+println("hello")
+println { "hello" }
+```
+
+The purpose of this ablility to substitute curly braces for parentheses for passing in one argument is to enable client programmers to write function literals between curly braces. This can make a method call feel more like a control abstraction.
+
+```
+def withPrintWriter(file: File)(op: PrintWriter=>Unit) {
+	val writer = new PrintWriter(file)
+	try {
+		op(writer)
+	} finally {
+		writer.close()
+	}
+}
+
+val file = new File("data.txt")
+withPrintWriter(file) {
+	writer => writer.println(new java.util.Date)
+}
+```
+
+---
+By-name parameters
+
+What if there is no value to pass into the code between the curly braces? To help with such situation, Scala provides by-name parameters.
+
+```
+// Without using by-name parameters
+var assertionEnable = true;
+def myAssert(predicate: ()=>Boolean) =
+	if(assertionEnable && !predicate()) throw new AssertionError
+```
+
+The definition is fine, but using it is a little bit awkward:
+	
+	myAssert(()=>5>3)
+
+You would really prefer to leave out the empty parameter list and => symbol in the function literal and write the code like this:
+
+	myAssert(5>3) // Won't work, because missing ()=>
+
+By-name parameters exist precisely so that you can do this. To make a by-name parameter, you give the parameter a type starting with => instead of ()=>.
+
+	def byNameAssert(predicate: =>Boolean) = 
+		if(assertionEnable && !predicate) throw new AssertError
+
+Now you can leave out the empty parameter in the property you want to assert. The result is that using byNameAssert looks exactly like using a built-in control structure:
+
+	byNameAssert(5>3)
 
 
+---
+Parameterless methods
+
+```
+abstract class Element {
+	def contents: Array[String]
+
+	def height: Int = contents.length
+
+	def width: Int = if(height==0) return 0 else return contents(0).length
+}
+```
+
+Note that none of Element's three method has a parameter list, not even an empty one. Instead of:
+
+	def width(): Int
+
+The method is defined without parameter:
+
+	def width: Int
+
+Such parameterlesss methods are quite common in Scala. The recommended convention is to use a parameterless method whenever there are no parameters and the method accesses mutable state only by reading fields of the containing object(it doesn't change mutable state). 
+
+In principle, it is possible to leave out all empty parentheses in Scala function calls. However, it is recommended to still write the empty parentheses when the invoked method represents more than a property of its receiver object. For instance, empty parentheses are appropriate if the method performs I/O, or writes reassignable vars, or reading vars other than the receiver's fields, either directly or indirectly by using mutable objects.
+
+To summarize, it is encouraged style in Scala to define methods that take no parameters and have no side effects as parameterless methods. On the other hand, you should never define a method that has side-effects without parentheses, because then invocations of the method would like a field selection.
+
+
+---
+In Scala, fields and methods are in the same namespace. This makes it possible for a field to override a parameterless method.
+
+```
+abstract class Element {
+	def contents: Array[String]
+}
+
+class ArrayElement(conts: Array[String]) extends Element {
+	def contents: Array[String] = conts
+}
+```
+
+Field contents in this version of ArrayElement is a perfectly good implementation of the parameterless method contents in class Element.
+
+On the other hand, in Scala it is forbidden to define a field and method with the same name in the same class, whereas it is allowed in Java.
+
+
+---
+
+```
+class ArrayElement (val contents: Array[String]) extends Element
+```
+
+Note that now the contents parameter is prefixed by val. This is a shorthand that defines at the same time a parameter and field with the same name. You can also prefix a class parameter with var, in which case the corresponding field would be reassignable. Finally, it is possible to add modifiers such as private, protected, or override to these parametric fields, just as you can do for any other class member.
+
+```
+class Cat {
+	val dangerous = false
+}
+
+class Tiger(
+	override val dangerous: Boolean, 
+	private var age: Int
+) extends Cat
+```
+
+---
+Invoking superclass constructors
+
+```
+class LineElement(s: String) extends ArrayElement(Array(s)) {
+	override def width = s.length
+	override def height = 1
+}
+```
+
+Since LineElement extends ArrayElement, and ArrayElement's constructor takes a parameter(an Array[String]), LineElement needs to pass an argument to the primary constructor of its superclass. To invoke a superclass constructor, you simply place the arguments you want to pass in parentheses following the name of the superclass.
+
+
+---
+Using override modifiers
+
+Scala requires `override` for all members that override a concrete memeber in a parent class. The modifier is optional if a memeber implements an abstract memeber with same name. The modifier is forbidden if a member does not override or implement some other memeber in a base class.
+
+Sometimes when designing an inheritance hierarchy, you want to ensure that a member cannot be overridden by subclass. In Scala, as in Java, you can do this by adding a final modifier to the member.
+
+You may also at times want to ensure that an entire class not subclassed. To do this you simply declare the entire class final by adding a final modifier to the class declaration.
+>>>>>>> fa004fdc3394401077c95432c15e7df8a3cab039
