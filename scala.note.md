@@ -139,7 +139,6 @@ In Scala, `public` is the default access level.
 
 Method parameters in Scala are vals, not vars.
 
-<<<<<<< HEAD
 The Scala compiler treats a function defined in the procedure style, with curly braces but no equals sign, essentially the same as a function that explicitly declares its result type to be Unit:
 
 	def g() { "this string gets lost" }
@@ -153,11 +152,104 @@ If you intend to return a non-Unit value without explicitly declare result type,
 The function `h` returns String.
 
 -----
-=======
----
 Prefer vals, immutable objects, and methods without side effects. Reach for them first. Use vars, mutable objects, and moethods with side effects when you have a specific need and justification for them.
 
 ---
+The rules of semicolon inference
+
+A line ending is treated as a semicolon unless one of the following conditions is ture:
+
+* The line in question ends in a word that would not be legal as the end of a statement, such as a period or an infix operator.
+* The next line begins with a word that cannot start a statement.
+* The line ends while inside parentheses (…) or brackets […], because these cannot contain multiple statements anyway.
+
+---
+Singleton objects
+
+A singleton object definition looks like a class definition, except instead of the keyword `class` you use the keyword `object`.
+
+```
+object ChecksumAccumulator {
+	private val cache = Map[String, Int]()
+	
+	def calculate(s: String): Int = {
+		if(cache.contains(s)) 
+			cache(s)
+		else {
+			val acc = new ChecksumAccumulator
+			val cs = acc.calculate(s)
+			cache += (s->cs)
+			cs
+		}
+	}
+}
+```
+
+When a singleton object shares the same name with a class, it is called that class's `companion object`. The class is called the `companion class` of the singleton object. A class and its companion object can access each other's private members, and you must define both the class and its companion object in the same source file.
+
+If you are a Java programmer, one way to think of singleton objects is as the home for static methods. You can invoke methods on singleton objects using a similar syntax.
+
+```
+ChecksumAccumulator.calculate
+```
+
+One difference between classes and singleton objects is that singleton objects cannot take parameters, whereas classes can. Because you can't instantiate a singleton object with the new keyword, you have no way to pass parameters to it. Each singleton object is implemented as an instance of a synthetic class referenced from a static variable, so they have the same initializtion semantics as Java statics. In particular, a singleton object is initialized the first time some code accesses it.
+
+A singleton obeject that does not share the same name with a companion class is called a standalone object. You can use standalone objects for many purposes, including collecting related utility methods together, or defining an entry point to a Scala application.
 
 
->>>>>>> beae17fb4f757ea2c0b226a65276a256947b81ca
+---
+A Scala application
+
+To run a Scala program, you must supply the name of a standalone singleton object with a main method that takes one parameter, an Array[String], and has a result type of Unit. Any standalone object with a main method of the proper signature can be used as the entry point into an application.
+
+```
+object Summer {
+	def main(args: Array[String]) {
+		for(arg <- args) println(arg)
+	}
+}
+```
+
+Scala provides a trait, scala.Application:
+
+```
+object Summer extends Application {
+	for(arg <- args) println(arg)
+}
+```
+
+To use the trait, you first write `extends Application` after the name of your singleton object. Then instead of writing a main method, you place the code you would have put in the main method directly between the curly braces of the singleton object.
+
+---
+Scala implicitly imports members of packages `java.lang` and `scala`, as well as the members of a singleton object named Predef, into every Scala source file. Predef, which resides in package `scala`, contains many useful methods. For example, when you say println in a Scala source file, you are actually invoking println on Predef. Predef.println turns around and invokes Console.println, which does the real work. When you say assert, you are invoking Predef.assert.
+
+
+---
+If an integer literal ends in an L or l, it is a Long, otherwise it is an Int.
+
+If an Int literal is assigned to a variable of type Short or Byte, the literal is treated as if it were a Short or Byte type so long as the literal value is within the valid range for that type.
+
+```
+val prog = 111L // Long
+val tower = 11 // Int
+val little: Byte = 38 // Byte
+```
+
+If a floating-point literal ends in an F or f, it is a Float, otherwise it is a Double.
+
+Scala includes a special syntax for raw strings. You start and end a raw string with three double quotation marks. The interior of a raw string may contain any chars, including newlines, quotation marks, and special characters.
+
+```
+println("""|Welcome to Ultamix 3000.             |Type "HELP" for help.""")
+```
+
+
+---
+Most operators are infix operators, which mean the method to invoke sits between, the object and parameter or parameters you wish to pass to the method. Scala also has two other operator notations: prefix and postfix. In prefix notation, you put the method name before the object, for example, `-7`. In postfix notation, you put the method after the object, for example `7 toLong`.
+
+As with the infix operators, prefix operators are a shorthand way of invoking methods. In this case, however, the name of the method has "unary_" prepended to the operator character. For instance, Scala will transform the expression `-2.0` into the method invocation `(2.0).unary_-`. 
+
+Postfix operators are methods that take no arguments, when they are invoked without a dot or parentheses. In Scala, you can leave off empty parentheses on method calls. The convention is that you include parentheses if the method has side effects, such as println(), but you can leave them off if the method has no side effects, such as toLowerCase invoked on a String. In this case of method that requires no arguments, you can alternatively leave off the dot and use postfix operator notation.
+
+
