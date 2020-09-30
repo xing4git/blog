@@ -1,6 +1,6 @@
 Blogs
 ----
-My blog for Golang, Linux, Shell, C...  
+My blog for Golang, Linux, Shell, and C 
 Please see the subdir for detail.
 
 
